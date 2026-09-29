@@ -50,7 +50,7 @@ a { color: var(--green); }
 .brand svg { width: 30px; height: 30px; }
 .brand.light { color: #fff; }
 .nav { display: flex; align-items: center; gap: 28px; }
-.nav a:not(.btn) { color: var(--ink-2); text-decoration: none; font-weight: 500; font-size: .96rem; }
+.nav a:not(.btn) { color: var(--ink-2); text-decoration: none; font-weight: 500; font-size: .96rem; white-space: nowrap; }
 .nav a:not(.btn):hover { color: var(--green); }
 .nav .btn { color: #fff; }
 .burger { display: none; background: none; border: 0; padding: 8px; cursor: pointer; }
@@ -166,6 +166,13 @@ details p { color: var(--muted); padding-right: 40px; }
 .foot-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; font-size: .84rem; }
 
 /* ---------- responsive ---------- */
+@media (max-width: 1000px) {
+  .nav { display: none; position: absolute; top: 72px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 20px 20px; }
+  .nav.open { display: flex; }
+  .nav a:not(.btn) { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .nav .btn { margin-top: 14px; }
+  .burger { display: block; }
+}
 @media (max-width: 1080px) {
   .cards { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(3, 1fr); row-gap: 36px; }
@@ -173,11 +180,6 @@ details p { color: var(--muted); padding-right: 40px; }
 }
 @media (max-width: 860px) {
   .wrap { padding-inline: 20px; }
-  .nav { display: none; position: absolute; top: 72px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 20px 20px; }
-  .nav.open { display: flex; }
-  .nav a:not(.btn) { padding: 12px 0; border-bottom: 1px solid var(--line); }
-  .nav .btn { margin-top: 14px; }
-  .burger { display: block; }
   .hero { padding: 44px 0 56px; }
   .hero-grid, .calc-grid, .pilot-grid, .contact-grid { grid-template-columns: 1fr; gap: 36px; }
   .chip { left: 16px; bottom: 16px; }

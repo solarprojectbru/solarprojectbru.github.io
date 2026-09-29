@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home Energy Dashboard — Brunei Solar</title>
+  <meta name="description" content="Track your household electricity use, solar output, bill savings and energy efficiency, using Brunei's residential tariff bands.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/dashboard.css">
+</head>
+<body class="dash">
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="index.html" class="brand" aria-label="Brunei Solar home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#F2B72E"/><g stroke="#F2B72E" stroke-width="2.4" stroke-linecap="round"><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6.1 6.1l2.8 2.8M23.1 23.1l2.8 2.8M6.1 25.9l2.8-2.8M23.1 8.9l2.8-2.8"/></g></svg>
+      <span>Brunei Solar</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html#solutions">Solutions</a>
+      <a href="index.html#savings">Savings</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="index.html#contact" class="btn btn-sm">Free site survey</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="wrap dash-main">
+  <div class="dash-head">
+    <div>
+      <h1>Home energy dashboard</h1>
+      <p class="muted">See where your electricity goes, what solar saves you, and how efficient your home is.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="sample" class="on">Sample solar home</button>
+      <button role="tab" aria-selected="false" data-tab="tracker">My usage tracker</button>
+    </div>
+  </div>
+
+  <!-- ============ SAMPLE HOME ============ -->
+  <section id="tab-sample">
+    <p class="demo-note">Demo with sample data: a family of 6 in Brunei-Muara with an 8 kWp rooftop system. Customers with a monitored system will see their own live figures here.</p>
+
+    <!-- Today -->
+    <div class="grid-2-1">
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2>Latest day</h2><p class="sub" id="dayLabel"></p></div>
+          <ul class="legend">
+            <li><i class="key-line" style="--c:var(--s-grid)"></i>Home usage</li>
+            <li><i class="key-line" style="--c:var(--s-solar)"></i>Solar output</li>
+          </ul>
+        </div>
+        <div class="chart" id="dayChart"></div>
+        <div class="day-stats" id="dayStats"></div>
+        <details class="table-view"><summary>View data table</summary><div id="dayTable"></div></details>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h2>This month's bill so far</h2><p class="sub" id="billLabel"></p></div></div>
+        <div class="bill-figs" id="billFigs"></div>
+        <div class="bands" id="bands"></div>
+        <p class="band-note" id="bandNote"></p>
+        <p class="fine">Residential tariff bands used: B$0.01/kWh up to 600 kWh, B$0.08 to 2,000, B$0.10 to 4,000, B$0.12 above. Check your latest bill for current rates.</p>
+      </article>
+    </div>
+
+    <!-- History, scoped by the filter -->
+    <div class="filter-row" role="group" aria-label="Time range">
+      <span>Time range</span>
+      <button data-range="3">Last 3 months</button>
+      <button data-range="6">Last 6 months</button>
+      <button data-range="12" class="on">Last 12 months</button>
+    </div>
+
+    <div class="kpis">
+      <div class="hero-tile">
+        <span>Saved on electricity bills</span>
+        <strong id="kSave">–</strong>
+        <em id="kSaveSub"></em>
+      </div>
+      <div class="tile"><span>Solar produced</span><strong id="kProd">–</strong><em id="kProdSub"></em></div>
+      <div class="tile"><span>Powered by your own solar</span><strong id="kSelf">–</strong><em>share of home usage</em></div>
+      <div class="tile"><span>Bought from the grid</span><strong id="kGrid">–</strong><em id="kGridSub"></em></div>
+      <div class="tile"><span>CO₂ avoided</span><strong id="kCo2">–</strong><em>estimate, gas-fired grid</em></div>
+    </div>
+
+    <div class="grid-2-1">
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2>Monthly energy</h2><p class="sub">Where your home's electricity came from, kWh</p></div>
+          <ul class="legend">
+            <li><i class="key-rect" style="--c:var(--s-solar)"></i>Solar used at home</li>
+            <li><i class="key-rect" style="--c:var(--s-grid)"></i>From the grid</li>
+          </ul>
+        </div>
+        <div class="chart" id="monthChart"></div>
+        <details class="table-view"><summary>View data table</summary><div id="monthTable"></div></details>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h2>Efficiency rating</h2><p class="sub">Electricity per person per day</p></div></div>
+        <div class="rating" id="rating"></div>
+        <ol class="scale" id="scale"></ol>
+        <p class="fine">Rating bands are an illustrative guide for large Brunei family homes, not an official standard.</p>
+      </article>
+    </div>
+
+    <div class="grid-2-1">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Where the energy goes</h2><p class="sub">Estimated split of home usage over the selected period, kWh</p></div></div>
+        <div class="chart" id="applChart"></div>
+        <details class="table-view"><summary>View data table</summary><div id="applTable"></div></details>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h2>Ways to save more</h2><p class="sub">Based on this home's pattern</p></div></div>
+        <ul class="tips" id="tips"></ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ MY TRACKER ============ -->
+  <section id="tab-tracker" hidden>
+    <p class="demo-note">Log your monthly meter reading or bill to track your own usage and efficiency. Your entries stay in this browser on this device only; nothing is sent to us.</p>
+
+    <div class="grid-1-2">
+      <article class="panel">
+        <h2>Add a month</h2>
+        <form id="tForm" class="tform" novalidate>
+          <label>Month<input type="month" name="month" required></label>
+          <label>Electricity from the grid (kWh)<input type="number" name="grid" min="0" step="1" required placeholder="e.g. 2400"></label>
+          <label>Solar produced (kWh, if you have solar)<input type="number" name="solar" min="0" step="1" placeholder="optional"></label>
+          <label>People living in the home<input type="number" name="people" min="1" max="30" step="1" value="5" required></label>
+          <button class="btn btn-block" type="submit">Save month</button>
+          <p class="form-note" id="tNote" hidden></p>
+        </form>
+        <div class="t-actions">
+          <button type="button" class="link-btn" id="tExample">Load example data</button>
+          <button type="button" class="link-btn danger" id="tClear">Clear all</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h2>Grid electricity by month</h2><p class="sub">kWh bought from the grid</p></div></div>
+        <div class="t-kpis" id="tKpis"></div>
+        <div class="chart" id="tChart"></div>
+        <div id="tTable"></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap foot-bottom">
+    <span>© 2026 Brunei Solar (working name). Company registration in progress.</span>
+    <span>All figures are estimates, not guarantees.</span>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<script src="assets/dashboard.js"></script>
+</body>
+</html>
