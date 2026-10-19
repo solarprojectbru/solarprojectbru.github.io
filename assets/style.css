@@ -405,3 +405,39 @@ body.home, body.home .site-header, body.home .slider { background-color: var(--n
 .cta-band .btn { background: var(--navy); border-color: var(--navy); color: #fff; }
 .cta-band .btn:hover { background: #000; border-color: #000; }
 @media (max-width: 560px) { .cta-band-inner { padding: 28px 22px; } .cta-band .btn { width: 100%; } }
+
+/* ---------- why page: fact diagrams ---------- */
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.fact { margin: 0; }
+.fact svg { width: 100%; height: auto; display: block; margin-bottom: 14px; overflow: visible; }
+.fact text { font: 400 11px var(--body); fill: #A9A8BE; }
+.fact text.big { font: 900 22px var(--head); fill: #fff; }
+.fact text.mo { font-size: 9px; fill: #8A89A3; }
+.fact figcaption { font-size: .95rem; line-height: 1.5; color: #D9D8EA; }
+.fact figcaption strong { display: block; font: 900 1.7rem var(--head); color: var(--lime); margin-bottom: 4px; }
+.fact .pv rect { fill: rgba(42,106,168,.55); stroke: #CFE8FF; stroke-width: 1.5; }
+.fact .pv path { stroke: #7FB2E5; stroke-width: 1; fill: none; }
+.fact .arrow-line, .fact .arrow-head { stroke: var(--lime); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fact .axis, .fact .tick { stroke: rgba(255,255,255,.25); stroke-width: 1; }
+.fact .bar { fill: var(--lime); transform-box: fill-box; transform-origin: bottom; transform: scaleY(0); transition: transform .7s cubic-bezier(.2,.8,.2,1) var(--d); }
+.fact .track { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 12; }
+.fact .arc { fill: none; stroke: var(--lime); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 0 var(--len); transition: stroke-dasharray 1.4s cubic-bezier(.2,.8,.2,1); }
+.fact .seg { fill: rgba(255,255,255,.12); transition: fill .4s var(--d); }
+.fact .orbit, .fact .orbit-head { fill: none; stroke: #F2B72E; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.fact .spin { transform-origin: 130px 55px; animation: orbit 6s linear infinite; animation-play-state: paused; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+.fact .track-bar { fill: rgba(255,255,255,.12); }
+.fact .fill-bar { fill: var(--lime); transform-box: fill-box; transform-origin: left; transform: scaleX(0); transition: transform 1.6s cubic-bezier(.2,.8,.2,1); }
+.fact .shield { fill: rgba(141,198,63,.18); stroke: var(--lime); stroke-width: 1.8; }
+.fact .shield-tick { fill: none; stroke: var(--lime); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.facts.in .bar { transform: scaleY(1); }
+.facts.in .arc { stroke-dasharray: var(--fill) var(--len); }
+.facts.in .seg { fill: var(--lime); }
+.facts.in .spin { animation-play-state: running; }
+.facts.in .fill-bar { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .fact .bar, .fact .arc, .fact .seg, .fact .fill-bar { transition: none; }
+  .fact .spin { animation: none; }
+}
+@media (max-width: 1150px) { .facts { grid-template-columns: 1fr 1fr; gap: 36px; } }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }

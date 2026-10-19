@@ -138,3 +138,12 @@ if (slider) {
   });
   go(0);
 }
+
+// ---------- Why page: animate the fact diagrams when they scroll into view ----------
+const facts = document.querySelector('.facts');
+if (facts) {
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { facts.classList.add('in'); io.disconnect(); } }), { threshold: 0.3 });
+    io.observe(facts);
+  } else facts.classList.add('in');
+}
