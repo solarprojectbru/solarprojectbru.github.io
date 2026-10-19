@@ -441,3 +441,7 @@ body.home, body.home .site-header, body.home .slider { background-color: var(--n
 }
 @media (max-width: 1150px) { .facts { grid-template-columns: 1fr 1fr; gap: 36px; } }
 @media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+
+/* photo strip: pictures fill the whole strip, no dark gaps */
+.reel { padding: 0; }
+.reel-item { height: clamp(340px, 36vw, 500px); border-right-width: 1px; }
