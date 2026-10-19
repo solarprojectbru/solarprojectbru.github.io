@@ -139,13 +139,38 @@ if (slider) {
   go(0);
 }
 
-// ---------- Why page: animate the fact diagrams when they scroll into view ----------
+// ---------- Why page: fact diagrams follow the scroll position ----------
 const facts = document.querySelector('.facts');
 if (facts) {
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { facts.classList.add('in'); io.disconnect(); } }), { threshold: 0.3 });
-    io.observe(facts);
-  } else facts.classList.add('in');
+  const band = facts.closest('.band');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bars = [...facts.querySelectorAll('.bar')];
+  const arc = facts.querySelector('.arc');
+  const segs = [...facts.querySelectorAll('.seg')];
+  const fill = facts.querySelector('.fill-bar');
+  const spin = facts.querySelector('.spin');
+  const counters = [...facts.querySelectorAll('[data-count]')];
+  const clamp = v => Math.max(0, Math.min(1, v));
+  bars.forEach(b => { b.style.transformBox = 'view-box'; b.style.transformOrigin = `${b.dataset.ox}px 86px`; });
+  const render = () => {
+    const r = facts.getBoundingClientRect();
+    // 0 when the diagrams first appear at the bottom of the screen, 1 when they reach the upper third
+    const p = reduce ? 1 : clamp((innerHeight - r.top) / (innerHeight * 0.7));
+    bars.forEach((b, k) => { b.style.transform = `scaleY(${clamp((p - k * 0.035) / 0.6)})`; });
+    if (arc) { const len = parseFloat(arc.style.getPropertyValue('--len')), f = parseFloat(arc.style.getPropertyValue('--fill')); arc.style.strokeDasharray = `${f * p} ${len}`; }
+    segs.forEach((sg, k) => { sg.style.fill = k < Math.round(p * 12) ? 'var(--lime)' : 'rgba(255,255,255,.12)'; });
+    if (fill) fill.style.transform = `scaleX(${p})`;
+    if (spin) spin.style.transform = `rotate(${p * 360}deg)`;
+    counters.forEach(c => {
+      const v = Math.round(+c.dataset.count * p);
+      c.textContent = (c.dataset.pre || '') + (c.dataset.fmt === 'comma' ? v.toLocaleString('en') : v) + (c.dataset.suffix || '');
+    });
+    if (band && !reduce) band.style.backgroundPosition = `center, center ${50 + (r.top / innerHeight - 0.5) * 30}%, center`;
+  };
+  let ticking = false;
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { render(); ticking = false; }); } }, { passive: true });
+  addEventListener('resize', render);
+  render();
 }
 
 // ---------- photo strip: tap to flip a card on touch screens ----------
