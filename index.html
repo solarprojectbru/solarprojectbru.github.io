@@ -9,7 +9,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=26">
+  <link rel="stylesheet" href="assets/style.css?v=28">
+  <script>
+    // header colour: dark (default) or light, remembered across pages
+    (function () {
+      var root = document.documentElement;
+      try { if (localStorage.getItem('bs-header') === 'light') root.classList.add('header-light'); } catch (e) {}
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('#themeToggle');
+        if (!b) return;
+        var light = root.classList.toggle('header-light');
+        b.setAttribute('aria-label', light ? 'Switch top bar to dark mode' : 'Switch top bar to white mode');
+        try { localStorage.setItem('bs-header', light ? 'light' : 'dark'); } catch (e2) {}
+      });
+    })();
+  </script>
 </head>
 <body class="home">
 
@@ -30,6 +44,7 @@
       <div class="has-sub cta"><a href="contact.html" class="btn btn-sm">Talk to our team</a>
         <div class="sub right"><a href="contact.html">Contact us</a><a href="contact.html#faq">FAQ</a></div></div>
     </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch top bar to white mode" title="White / dark top bar"><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -37,7 +52,6 @@
 <main id="top">
   <h1 class="sr-only">Brunei Solar: rooftop solar and battery systems in Brunei</h1>
   <section class="slider" aria-roledescription="carousel" aria-label="Highlights" tabindex="0">
-    <svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,0 H1440 V40 C1100,95 760,10 420,48 C240,68 100,70 0,58 Z"/></svg>
     <div class="slides">
       <div class="slide" style="--img:url('https://images.unsplash.com/photo-1705583855040-3c25b4a9eab9?auto=format&fit=crop&w=2400&q=80')" role="img" aria-roledescription="slide" aria-label="1 of 4: Omar Ali Saifuddien Mosque reflected in the lagoon, Bandar Seri Begawan"></div>
       <div class="slide diagram" style="--img:url('/assets/exploded-panel.svg')" role="img" aria-roledescription="slide" aria-label="2 of 4: Exploded view of a solar panel: tempered glass, EVA, solar cells, EVA, backsheet, aluminium frame and junction box"></div>

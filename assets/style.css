@@ -619,3 +619,28 @@ body.home, body.home .site-header, body.home .slider { background-color: var(--n
 @media (max-width: 560px) { .ex-card { width: 34%; top: 11%; } .ex-card p { display: none; } }
 .ex-sun { transition: opacity .5s; }
 .ex-stage[data-scene="s3"] .ex-sun { opacity: 0; }
+
+/* ---------- top bar: straight edge + white/dark mode switch ---------- */
+.wave { display: none !important; }
+.site-header { transition: background-color .35s, border-color .35s; border-bottom: 1px solid transparent; }
+.theme-toggle { width: 40px; height: 40px; margin-left: 10px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: transparent; color: #F2B72E; display: grid; place-items: center; cursor: pointer; transition: background .2s, border-color .2s, color .2s, transform .3s; }
+.theme-toggle:hover { transform: rotate(20deg); border-color: var(--lime); }
+.theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .i-moon { display: none; }
+html.header-light .site-header { background: #fff; border-bottom-color: var(--line); box-shadow: 0 1px 12px rgba(27,26,49,.06); }
+html.header-light .brand:not(.light) { color: var(--ink); }
+html.header-light .nav > a, html.header-light .has-sub > a:not(.btn) { color: var(--ink-2); }
+html.header-light .nav > a:hover, html.header-light .has-sub > a:not(.btn):hover, html.header-light .nav a.active { color: var(--lime-dark); }
+html.header-light .burger span { background: var(--ink); }
+html.header-light .theme-toggle { border-color: var(--line); color: var(--navy); }
+html.header-light .theme-toggle .i-sun { display: none; }
+html.header-light .theme-toggle .i-moon { display: block; }
+html.header-light body.home .site-header { background: #fff; }
+@media (max-width: 1150px) {
+  .bar { gap: 6px; }
+  .theme-toggle { margin-left: auto; margin-right: 4px; }
+  html.header-light .nav { background: #fff; border-top-color: var(--line); }
+  html.header-light .nav > a, html.header-light .has-sub > a:not(.btn) { border-bottom-color: var(--line); }
+  html.header-light .sub a { color: var(--muted); }
+}
+@media (min-width: 1151px) { .bar { justify-content: flex-start; } .nav { margin-left: auto; } }
