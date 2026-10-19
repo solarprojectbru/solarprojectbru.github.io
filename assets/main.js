@@ -147,3 +147,13 @@ if (facts) {
     io.observe(facts);
   } else facts.classList.add('in');
 }
+
+// ---------- photo strip: tap to flip a card on touch screens ----------
+document.querySelectorAll('.reel-item').forEach(card => card.addEventListener('click', e => {
+  if (matchMedia('(hover: hover)').matches) return;          // mouse users flip on hover and click through
+  if (!card.classList.contains('flipped')) {                  // first tap flips, second tap follows the link
+    e.preventDefault();
+    document.querySelectorAll('.reel-item.flipped').forEach(c => c.classList.remove('flipped'));
+    card.classList.add('flipped');
+  }
+}));
