@@ -370,3 +370,8 @@ body.home .slides, body.home .slide { height: 100%; }
 body.home .slide { min-height: 0; padding: 0; }
 body.home .slide h1, body.home .slide h2 { font-size: clamp(2.6rem, 6vw, 5rem); max-width: 900px; margin: 0; }
 body.home .slide .kicker { font-size: .95rem; margin-bottom: 16px; }
+
+/* home slides are pure pictures */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+body.home .slide { background: linear-gradient(0deg, rgba(10,10,25,.45) 0%, rgba(10,10,25,0) 22%), var(--img) center / cover; }
+body.home .slide.diagram { background: #0A2442 var(--img) center / contain no-repeat; background-origin: content-box; padding: 90px 40px 96px; }
