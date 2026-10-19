@@ -375,3 +375,21 @@ body.home .slide .kicker { font-size: .95rem; margin-bottom: 16px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 body.home .slide { background: linear-gradient(0deg, rgba(10,10,25,.45) 0%, rgba(10,10,25,0) 22%), var(--img) center / cover; }
 body.home .slide.diagram { background: var(--img) center 60% / contain no-repeat, linear-gradient(#1F4F80 1.4px, transparent 1.4px) 0 0 / 160px 160px, linear-gradient(90deg, #1F4F80 1.4px, transparent 1.4px) 0 0 / 160px 160px, linear-gradient(#173F69 1px, transparent 1px) 0 0 / 32px 32px, linear-gradient(90deg, #173F69 1px, transparent 1px) 0 0 / 32px 32px, radial-gradient(ellipse at 50% 45%, #0E3459, #081D35 75%); background-origin: content-box, border-box, border-box, border-box, border-box, border-box; padding: 70px 24px 16px; }
+
+/* home: only the logo at first; the menu animates in after the first click */
+body.home .nav > *, body.home .burger { opacity: 0; transform: translateY(-14px); pointer-events: none; transition: opacity .45s ease, transform .45s ease; }
+body.home.menu-open .nav > *, body.home.menu-open .burger { opacity: 1; transform: none; pointer-events: auto; }
+body.home.menu-open .nav > *:nth-child(1) { transition-delay: .05s; }
+body.home.menu-open .nav > *:nth-child(2) { transition-delay: .12s; }
+body.home.menu-open .nav > *:nth-child(3) { transition-delay: .19s; }
+body.home.menu-open .nav > *:nth-child(4) { transition-delay: .26s; }
+body.home.menu-open .nav > *:nth-child(5) { transition-delay: .33s; }
+body.home.menu-open .nav > *:nth-child(6) { transition-delay: .42s; }
+body.home .brand { cursor: pointer; }
+body.home:not(.menu-open) .brand svg { animation: sunPulse 2.4s ease-in-out infinite; }
+@keyframes sunPulse { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.12) rotate(20deg); } }
+@media (max-width: 1150px) {
+  /* on phones the burger button is what animates in; the menu itself opens from it as usual */
+  body.home .nav > * { opacity: 1; transform: none; pointer-events: auto; }
+}
+@media (prefers-reduced-motion: reduce) { body.home .brand svg { animation: none !important; } }
