@@ -10,7 +10,8 @@ nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   burger.setAttribute('aria-expanded', false);
 }));
 
-document.getElementById('yr').textContent = new Date().getFullYear();
+const yr = document.getElementById('yr');
+if (yr) yr.textContent = new Date().getFullYear();
 
 // ---------- Savings estimator ----------
 // Planning assumptions; check against the latest DES tariff schedule.
@@ -60,6 +61,7 @@ function calc() {
   $('rCo2').textContent = (offset * 12 * CO2 / 1000).toFixed(1) + ' tonnes';
 }
 
+if ($('use')) {
 document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.seg button').forEach(x => {
     x.classList.toggle('on', x === b);
@@ -73,11 +75,12 @@ document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click'
 }));
 ['use', 'size', 'rate'].forEach(id => $(id).addEventListener('input', calc));
 calc();
+}
 
 // ---------- Enquiry form ----------
 // Not connected to a backend yet: validates, then shows a message.
 const form = $('form');
-form.addEventListener('submit', e => {
+if (form) form.addEventListener('submit', e => {
   e.preventDefault();
   let ok = true;
   form.querySelectorAll('[required]').forEach(f => {
@@ -91,3 +94,31 @@ form.addEventListener('submit', e => {
     ? 'Thank you. Online enquiries are not connected yet — please email solar.project.bru@gmail.com with these details and we will reply within two working days.'
     : 'Please add your name and phone number.';
 });
+
+// ---------- Front-page slider ----------
+const slider = document.querySelector('.slider');
+if (slider) {
+  const track = slider.querySelector('.slides');
+  const slides = [...track.children];
+  const dots = slider.querySelectorAll('.dots button');
+  const count = slider.querySelector('.count b');
+  let i = 0;
+  const go = n => {
+    i = (n + slides.length) % slides.length;
+    track.style.transform = `translateX(${-i * 100}%)`;
+    slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', k !== i); s.querySelectorAll('a').forEach(a => a.tabIndex = k === i ? 0 : -1); });
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    if (count) count.textContent = String(i + 1).padStart(2, '0');
+  };
+  slider.querySelector('.next').addEventListener('click', () => go(i + 1));
+  slider.querySelector('.prev').addEventListener('click', () => go(i - 1));
+  dots.forEach((d, k) => d.addEventListener('click', () => go(k)));
+  slider.addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(i + 1); if (e.key === 'ArrowLeft') go(i - 1); });
+  let x0 = null;
+  track.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 50) go(i + (dx < 0 ? 1 : -1));
+  });
+  go(0);
+}
