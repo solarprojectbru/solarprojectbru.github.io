@@ -464,3 +464,29 @@ body.home, body.home .site-header, body.home .slider { background-color: var(--n
 .face.back .more { margin-top: 8px; color: var(--lime); font-weight: 700; font-size: .95rem; }
 .reel-item:hover img { transform: none; }
 @media (prefers-reduced-motion: reduce) { .flip { transition: none; } }
+
+/* ---------- why page: animated link cards ---------- */
+.person-card { opacity: 0; transform: translateY(40px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.person-grid.in .person-card { opacity: 1; transform: none; }
+.person-grid.in .person-card:nth-child(2) { transition-delay: .15s; }
+.person-grid.in .person-card:nth-child(3) { transition-delay: .3s; }
+.person-card:hover::before { transform: scale(1.08); filter: grayscale(0) brightness(.75); }
+/* light sweep */
+.person-card > span:not(.sheen), .person-card .arrow { position: relative; z-index: 1; }
+.person-card .sheen { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.18) 50%, transparent 65%); transform: translateX(-120%); }
+.person-card:hover .sheen { transform: translateX(120%); transition: transform .9s ease; }
+/* growing underline under the title */
+.person-card b { position: relative; display: table; padding-bottom: 6px; margin-bottom: 4px; }
+.person-card b::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--lime); transition: width .45s ease; }
+.person-card:hover b::after { width: 100%; }
+.person-card span { transition: transform .4s ease; }
+.person-card:hover > span:not(.sheen) { transform: translateY(-4px); }
+/* arrow leaves to the right and comes back from the left */
+.person-card .arrow { overflow: hidden; }
+.person-card:hover .arrow { transform: none; }
+.person-card:hover .arrow svg { animation: arrowLoop .7s ease forwards; }
+@keyframes arrowLoop { 0% { transform: translateX(0); } 45% { transform: translateX(46px); opacity: 0; } 46% { transform: translateX(-46px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .person-card { opacity: 1; transform: none; transition: none; }
+  .person-card .sheen, .person-card:hover .arrow svg { animation: none; transition: none; }
+}

@@ -157,3 +157,12 @@ document.querySelectorAll('.reel-item').forEach(card => card.addEventListener('c
     card.classList.add('flipped');
   }
 }));
+
+// ---------- Why page: link cards rise in when scrolled into view ----------
+const pgrid = document.querySelector('.person-grid');
+if (pgrid) {
+  if ('IntersectionObserver' in window) {
+    const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { pgrid.classList.add('in'); io2.disconnect(); } }), { threshold: 0.2 });
+    io2.observe(pgrid);
+  } else pgrid.classList.add('in');
+}
