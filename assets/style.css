@@ -374,4 +374,4 @@ body.home .slide .kicker { font-size: .95rem; margin-bottom: 16px; }
 /* home slides are pure pictures */
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 body.home .slide { background: linear-gradient(0deg, rgba(10,10,25,.45) 0%, rgba(10,10,25,0) 22%), var(--img) center / cover; }
-body.home .slide.diagram { background: #0A2442 var(--img) center / contain no-repeat; background-origin: content-box; padding: 90px 40px 96px; }
+body.home .slide.diagram { background: var(--img) center 60% / contain no-repeat, linear-gradient(#1F4F80 1.4px, transparent 1.4px) 0 0 / 160px 160px, linear-gradient(90deg, #1F4F80 1.4px, transparent 1.4px) 0 0 / 160px 160px, linear-gradient(#173F69 1px, transparent 1px) 0 0 / 32px 32px, linear-gradient(90deg, #173F69 1px, transparent 1px) 0 0 / 32px 32px, radial-gradient(ellipse at 50% 45%, #0E3459, #081D35 75%); background-origin: content-box, border-box, border-box, border-box, border-box, border-box; padding: 70px 24px 16px; }

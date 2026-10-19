@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Lato, Arial, Helvetica, sans-serif">
 <defs><pattern id="g" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#173F69" stroke-width="1"/></pattern><pattern id="G" width="160" height="160" patternUnits="userSpaceOnUse"><path d="M160 0H0V160" fill="none" stroke="#1F4F80" stroke-width="1.4"/></pattern><radialGradient id="v" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#0E3459"/><stop offset="1" stop-color="#081D35"/></radialGradient></defs>
-<rect width="1600" height="900" fill="url(#v)"/><rect width="1600" height="900" fill="url(#g)"/><rect width="1600" height="900" fill="url(#G)"/>
 <path d="M694.0,805.5 L740.0,792.5 L786.0,805.5 L740.0,818.5 Z" fill="rgba(255,176,32,.25)" stroke="#FFB020" stroke-width="2"/>
 <path d="M694.0,805.5 v18 L740.0,836.5 L786.0,823.5 v-18" fill="none" stroke="#FFB020" stroke-width="2"/>
 <path d="M720.0,830.5 c-50 20 -100 10 -150 34 M760.0,832.5 c40 24 100 22 150 40" fill="none" stroke="#FFB020" stroke-width="3" stroke-linecap="round"/>
@@ -45,5 +44,5 @@
 <path d="M1030.0,260.0 v460" stroke="#2B5D8F" stroke-width="1" stroke-dasharray="3 6"/>
 <path d="M780.0,372.0 v460" stroke="#2B5D8F" stroke-width="1" stroke-dasharray="3 6"/>
 <path d="M450.0,247.0 v460" stroke="#2B5D8F" stroke-width="1" stroke-dasharray="3 6"/>
-<text x="60" y="848" font-size="15" letter-spacing="3" fill="#7FA9D1">EXPLODED VIEW · ROOFTOP SOLAR PANEL · BRUNEI SOLAR</text>
+<text x="60" y="848" font-size="15" letter-spacing="3" fill="#7FA9D1"></text>
 </svg>
