@@ -28,17 +28,21 @@
 
   let i = 0, playing = false, lang = 'ms', muted = !synth, timer = null, startedAt = 0, sceneMs = 0, raf = 0;
 
-  // pick a Malay voice if the device has one; Indonesian is the closest fallback
+  // English narration in the liveliest voice the device offers (Edge "Natural" voices first)
   let voice = null;
+  const VOICE_RANK = [/Aria.*Natural/i, /Jenny.*Natural/i, /Ava.*Natural/i, /Emma.*Natural/i, /Natural/i,
+    /Google US English/i, /Google UK English Female/i, /Samantha/i, /Zira/i];
   const pickVoice = () => {
     if (!synth) return;
-    const vs = synth.getVoices();
-    voice = vs.find(v => /^ms/i.test(v.lang)) || vs.find(v => /^id/i.test(v.lang)) || null;
+    const en = synth.getVoices().filter(v => /^en/i.test(v.lang));
+    voice = null;
+    for (const re of VOICE_RANK) { voice = en.find(v => re.test(v.name)); if (voice) break; }
+    voice = voice || en[0] || null;
   };
   if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
 
   const words = s => s.split(/\s+/).length;
-  const durationFor = s => Math.max(6000, words(s[lang]) * 430 + 1600);
+  const durationFor = s => Math.max(5500, words(s.en) * 400 + 1500);
 
   function show(n) {
     i = (n + SCENES.length) % SCENES.length;
@@ -60,12 +64,63 @@
     if (muted || !synth) { onEnd && onEnd(); return; }
     synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang === 'ms' ? (voice ? voice.lang : 'ms-MY') : 'en-GB';
-    if (lang === 'ms' && voice) u.voice = voice;
-    u.rate = 0.95;
-    u.onend = onEnd; u.onerror = onEnd;
+    u.lang = voice ? voice.lang : 'en-US';
+    if (voice) u.voice = voice;
+    // brighter and a little quicker for a friendly, upbeat tone
+    u.rate = 1.05; u.pitch = 1.15;
+    u.onstart = () => duck(true);
+    u.onend = () => { duck(false); onEnd && onEnd(); };
+    u.onerror = u.onend;
     synth.speak(u);
   }
+
+  // ---------- upbeat background music, generated live (no audio file needed) ----------
+  let ac = null, master = null, musicTimer = null, nextTime = 0, step16 = 0, musicOn = true;
+  const BPM = 116, S16 = 60 / BPM / 4, MUSIC_VOL = 0.11;
+  const CHORDS = [[60, 64, 67], [67, 71, 74], [69, 72, 76], [65, 69, 72]];   // C - G - Am - F
+  const MELODY = [76, 79, 81, 79, 76, 74, 72, 74, 76, 79, 84, 81, 79, 76, 74, 72];
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  let noiseBuf = null;
+  function tone(freq, t, dur, type, vol) {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05);
+  }
+  function noise(t, dur, vol, type, freq) {
+    const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = noiseBuf; f.type = type; f.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(master); src.start(t); src.stop(t + dur + 0.02);
+  }
+  function beat(st, t) {
+    const s = st % 16, chord = CHORDS[Math.floor(st / 16) % 4];
+    if (s === 0 || s === 8) tone(mtof(chord[0] - 24), t, 0.55, 'sine', 0.55);          // bass
+    if (s === 6 || s === 14) tone(mtof(chord[0] - 12), t, 0.2, 'sine', 0.3);
+    if (s % 2 === 0) tone(mtof(chord[[0, 1, 2, 1, 0, 2, 1, 2][s / 2]] + 12), t, 0.28, 'triangle', 0.16);   // plucky arpeggio
+    if (s % 4 === 0 && Math.floor(st / 64) % 2 === 1) tone(mtof(MELODY[(st / 4) % 16]), t, 0.35, 'square', 0.035); // bell melody every other phrase
+    if (s % 4 === 2) noise(t, 0.05, 0.12, 'highpass', 7000);                               // hi-hat
+    if (s === 4 || s === 12) noise(t, 0.14, 0.35, 'bandpass', 1600);                       // clap
+  }
+  function musicStart() {
+    if (!musicOn || musicTimer) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ac = ac || new AC();
+    if (ac.state === 'suspended') ac.resume();
+    if (!noiseBuf) { noiseBuf = ac.createBuffer(1, ac.sampleRate * 0.3, ac.sampleRate); const d = noiseBuf.getChannelData(0); for (let k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1; }
+    master = ac.createGain(); master.gain.value = 0.0001; master.connect(ac.destination);
+    master.gain.exponentialRampToValueAtTime(MUSIC_VOL, ac.currentTime + 0.8);
+    nextTime = ac.currentTime + 0.1;
+    musicTimer = setInterval(() => { while (nextTime < ac.currentTime + 0.15) { beat(step16, nextTime); nextTime += S16; step16++; } }, 25);
+  }
+  function musicStop() {
+    if (!musicTimer) return;
+    clearInterval(musicTimer); musicTimer = null;
+    const m = master; m.gain.setTargetAtTime(0.0001, ac.currentTime, 0.15);
+    setTimeout(() => m.disconnect(), 800);
+  }
+  function duck(down) { if (master && ac) master.gain.setTargetAtTime(down ? MUSIC_VOL * 0.45 : MUSIC_VOL, ac.currentTime, 0.25); }
 
   function run() {
     clearTimeout(timer); cancelAnimationFrame(raf);
@@ -73,7 +128,7 @@
     sceneMs = durationFor(s); startedAt = performance.now();
     let spoken = muted, timed = false;
     const next = () => { if (spoken && timed && playing) { if (i === SCENES.length - 1) stop(true); else { show(i + 1); run(); } } };
-    speak(s[lang], () => { spoken = true; next(); });
+    speak(s.en, () => { spoken = true; next(); });
     timer = setTimeout(() => { timed = true; next(); }, sceneMs);
     const tick = () => {
       const p = Math.min(1, (performance.now() - startedAt) / sceneMs);
@@ -87,11 +142,13 @@
   function play() {
     playing = true; root.classList.add('playing'); playBtn.setAttribute('aria-label', 'Pause');
     if (i === SCENES.length - 1) show(0);
+    musicStart();
     run();
   }
   function stop(ended) {
     playing = false; root.classList.remove('playing'); playBtn.setAttribute('aria-label', 'Play');
     clearTimeout(timer); cancelAnimationFrame(raf); synth && synth.cancel();
+    musicStop();
     if (ended) root.classList.add('ended');
   }
 
@@ -113,6 +170,12 @@
     if (muted) synth.cancel(); else if (playing) run();
   });
   if (!synth) { root.classList.add('muted', 'novoice'); }
+  const musicBtn = $('.ex-music');
+  musicBtn && musicBtn.addEventListener('click', () => {
+    musicOn = !musicOn; root.classList.toggle('nomusic', !musicOn);
+    musicBtn.setAttribute('aria-label', musicOn ? 'Turn music off' : 'Turn music on');
+    if (!musicOn) musicStop(); else if (playing) musicStart();
+  });
 
   // pause when scrolled out of view
   if ('IntersectionObserver' in window) {

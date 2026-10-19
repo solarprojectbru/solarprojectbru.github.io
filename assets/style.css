@@ -604,3 +604,7 @@ body.home, body.home .site-header, body.home .slider { background-color: var(--n
 .reel { padding: 0; }
 .reel-item, .face { border-radius: 0; }
 .reel-item:hover, .reel-item:focus, .reel-item.flipped { transform: none; }
+
+/* explainer: music on/off button */
+.ex-music .i-off, .explainer.nomusic .ex-music .i-on { display: none; }
+.explainer.nomusic .ex-music .i-off { display: block; }
