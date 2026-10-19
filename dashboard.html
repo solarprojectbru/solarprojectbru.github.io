@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home Energy Dashboard — Brunei Solar</title>
+  <title>Pilot Dashboard — Brunei Solar</title>
   <meta name="description" content="Track your household electricity use, solar output, bill savings and energy efficiency, using Brunei's residential tariff bands.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
-  <link rel="stylesheet" href="assets/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=5">
+  <link rel="stylesheet" href="assets/dashboard.css?v=2">
 </head>
 <body class="dash">
 
@@ -20,10 +20,15 @@
       <span>Brunei Solar</span>
     </a>
     <nav class="nav" id="nav">
-      <a href="index.html#solutions">Solutions</a>
+      <a href="index.html#why">Why Brunei Solar</a>
+      <div class="has-sub"><a href="index.html#how">How it works</a>
+        <div class="sub"><a href="index.html#how">Our 5-step process</a><a href="blueprint.html">3D system blueprint</a></div></div>
+      <a href="index.html#residential">Residential</a>
       <a href="index.html#savings">Savings</a>
-      <a href="dashboard.html" class="active">Dashboard</a>
-      <a href="index.html#contact" class="btn btn-sm">Free site survey</a>
+      <div class="has-sub"><a href="index.html#pilot" class="active">Pilot programme</a>
+        <div class="sub"><a href="index.html#pilot">About the pilot</a><a href="dashboard.html">Pilot dashboard</a></div></div>
+      <div class="has-sub cta"><a href="index.html#contact" class="btn btn-sm">Talk to our team</a>
+        <div class="sub right"><a href="index.html#contact">Contact us</a><a href="index.html#faq">FAQ</a></div></div>
     </nav>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
@@ -32,8 +37,9 @@
 <main class="wrap dash-main">
   <div class="dash-head">
     <div>
-      <h1>Home energy dashboard</h1>
-      <p class="muted">See where your electricity goes, what solar saves you, and how efficient your home is.</p>
+      <p class="kicker">Pilot programme</p>
+      <h1>Pilot dashboard</h1>
+      <p class="muted">How we track every pilot home: where the electricity goes, what solar saves, and how efficient the home is.</p>
     </div>
     <div class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="sample" class="on">Sample solar home</button>
@@ -163,6 +169,6 @@
 </footer>
 
 <div class="tip" id="tip" role="tooltip" hidden></div>
-<script src="assets/dashboard.js"></script>
+<script src="assets/dashboard.js?v=2"></script>
 </body>
 </html>

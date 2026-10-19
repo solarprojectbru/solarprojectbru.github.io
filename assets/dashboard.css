@@ -15,7 +15,7 @@
 .dash-head p { margin: 0; }
 .tabs { display: inline-flex; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
 .tabs button { border: 0; background: none; font: 600 .95rem var(--body); color: var(--muted); padding: 10px 20px; border-radius: 999px; cursor: pointer; }
-.tabs button.on { background: var(--green); color: #fff; }
+.tabs button.on { background: var(--navy); color: #fff; }
 .demo-note { background: #FDF3D8; border: 1px solid #F3DFA6; color: #5E4A12; border-radius: 12px; padding: 12px 16px; font-size: .92rem; margin: 0 0 22px; }
 
 /* ---------- layout ---------- */
@@ -87,9 +87,9 @@ table.dtable { width: 100%; border-collapse: collapse; font-size: .85rem; font-v
 .filter-row button.on { background: var(--ink); border-color: var(--ink); color: #fff; }
 .kpis { display: grid; grid-template-columns: 1.5fr repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
 .hero-tile, .tile { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; box-shadow: var(--shadow); }
-.hero-tile { background: var(--green-dark); border-color: var(--green-dark); }
+.hero-tile { background: var(--navy); border-color: var(--navy); }
 .hero-tile span, .hero-tile em { color: #CFE5DA; }
-.hero-tile strong { display: block; font: 800 3rem/1.1 var(--head); color: #fff; margin: 6px 0 4px; }
+.hero-tile strong { display: block; font: 900 3rem/1.1 var(--head); color: var(--lime); margin: 6px 0 4px; }
 .tile strong { display: block; font: 700 1.55rem var(--head); color: var(--ink); margin: 8px 0 2px; }
 .hero-tile em, .tile em { font-style: normal; font-size: .8rem; color: var(--muted); }
 .hero-tile em { color: #CFE5DA; }

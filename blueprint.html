@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Home Solar Works (3D) — Brunei Solar</title>
+  <meta name="description" content="An animated 3D guide to how a home solar system with a battery works: follow the electricity from the sun to your appliances, battery and the power grid, by day, evening, night and during a power cut.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bp: #0B2A4A; --line: #CFE8FF; --dim: #8FB3D6; --ink: #F2F8FF; --card: rgba(9,34,60,.92);
+      --solar: #FFB020; --ac: #4ADE80; --grid: #60A5FA; --batt: #C084FC; --off: #F87171; --cta: #F2B72E;
+      --head: "Plus Jakarta Sans", system-ui, sans-serif; --body: "Inter", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bp); color: var(--ink); font: 15px/1.5 var(--body); overflow: hidden; }
+    #stage { position: fixed; inset: 0; transition: background-color 1.2s; }
+    #stage canvas { display: block; }
+    button { font-family: inherit; }
+
+    /* ---------- top bar ---------- */
+    .top { position: fixed; top: 0; left: 0; right: 0; z-index: 6; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; padding-top: calc(12px + env(safe-area-inset-top, 0px)); background: linear-gradient(rgba(11,42,74,.95) 55%, transparent); flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font: 800 1.05rem var(--head); }
+    .brand svg { width: 26px; height: 26px; }
+    .modes { display: flex; gap: 4px; background: rgba(255,255,255,.07); border: 1px solid rgba(207,232,255,.2); border-radius: 999px; padding: 4px; }
+    .modes button { border: 0; background: none; color: var(--dim); font-weight: 600; font-size: .9rem; padding: 8px 14px; border-radius: 999px; cursor: pointer; transition: background .25s, color .25s; }
+    .modes button.on { background: var(--ink); color: var(--bp); }
+    .actions { display: flex; gap: 10px; align-items: center; }
+    .btn { border: 0; border-radius: 999px; padding: 9px 16px; font-weight: 700; font-size: .9rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-sun { background: var(--cta); color: #0F2A22; }
+    .btn-ghost { background: rgba(255,255,255,.08); color: var(--ink); border: 1px solid rgba(207,232,255,.25); }
+
+    /* ---------- cards ---------- */
+    .card { position: fixed; z-index: 4; background: var(--card); backdrop-filter: blur(8px); border: 1px solid rgba(207,232,255,.18); border-radius: 16px; padding: 16px 18px; transition: opacity .4s, transform .4s; }
+    .card.hide { opacity: 0; transform: translateY(12px); pointer-events: none; }
+    .card h2 { font: 700 1.05rem var(--head); margin: 0 0 4px; }
+    .muted { color: var(--dim); font-size: .85rem; margin: 0; }
+
+    /* now panel */
+    #now { left: 18px; bottom: 18px; width: 330px; }
+    .flows { display: grid; gap: 8px; margin: 12px 0; }
+    .flow { display: grid; grid-template-columns: 30px 1fr 30px auto; align-items: center; gap: 8px; font-size: .9rem; }
+    .flow .ic { font-size: 1.25rem; text-align: center; }
+    .flow .pipe { height: 6px; border-radius: 6px; background: rgba(255,255,255,.08); overflow: hidden; position: relative; }
+    .flow .pipe::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, var(--c) 0 6px, transparent 6px 16px); animation: run 0.9s linear infinite; }
+    .flow.rev .pipe::after { animation-direction: reverse; }
+    .flow.idle .pipe::after { animation: none; opacity: .15; }
+    .flow b { font-variant-numeric: tabular-nums; min-width: 64px; text-align: right; }
+    @keyframes run { from { transform: translateX(-16px); } to { transform: translateX(0); } }
+    .story { margin: 0; padding-left: 18px; font-size: .9rem; color: #D8E8F8; }
+    .story li { margin: 3px 0; }
+    .story strong { color: #fff; }
+    .key { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(207,232,255,.12); font-size: .78rem; color: var(--dim); }
+    .key span::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--c); margin-right: 5px; }
+    .toggles { display: flex; gap: 14px; margin-top: 10px; font-size: .8rem; color: var(--dim); }
+    .toggles label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+    /* info panel */
+    #info { right: 18px; top: 82px; width: 340px; max-height: calc(100vh - 104px); overflow: auto; }
+    #info .big { font-size: 1.6rem; line-height: 1; margin-bottom: 6px; }
+    #info p { margin: 6px 0; font-size: .92rem; color: #D8E8F8; }
+    #info details { margin-top: 10px; border-top: 1px solid rgba(207,232,255,.12); padding-top: 8px; }
+    #info summary { cursor: pointer; font-size: .82rem; color: var(--dim); font-weight: 600; }
+    #info details ul { margin: 6px 0; padding-left: 18px; font-size: .84rem; color: #C9DDF2; }
+    #info table { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: 4px; }
+    #info td { padding: 4px 0; border-top: 1px solid rgba(207,232,255,.1); color: #C9DDF2; }
+    #info td:last-child { text-align: right; color: #fff; }
+    .parts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .parts button { border: 1px solid rgba(207,232,255,.25); background: none; color: var(--line); font-size: .8rem; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
+    .parts button:hover, .parts button.on { background: var(--line); color: var(--bp); }
+
+    /* tour card */
+    #tour { left: 50%; bottom: 22px; transform: translateX(-50%); width: min(560px, calc(100vw - 24px)); padding: 18px 20px; border-color: rgba(242,183,46,.55); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+    #tour.hide { transform: translate(-50%, 16px); }
+    #tour .step { font-size: .75rem; font-weight: 700; color: var(--cta); letter-spacing: .06em; text-transform: uppercase; }
+    #tour h2 { font-size: 1.25rem; margin: 4px 0 6px; }
+    #tour p { margin: 0; font-size: 1rem; color: #E3EEF9; }
+    .dots { display: flex; gap: 6px; margin: 14px 0 0; }
+    .dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); transition: background .3s, width .3s; }
+    .dots i.on { background: var(--cta); width: 22px; border-radius: 6px; }
+    .tour-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .tour-nav .link { background: none; border: 0; color: var(--dim); cursor: pointer; font-size: .88rem; }
+    .tour-anim { animation: pop .45s ease; }
+    @keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .hint { position: fixed; z-index: 3; left: 50%; transform: translateX(-50%); bottom: 14px; font-size: .78rem; color: var(--dim); pointer-events: none; transition: opacity .4s; }
+
+    /* ---------- 3D labels ---------- */
+    .lbl { font: 600 12px var(--body); color: var(--ink); background: rgba(9,34,60,.88); border: 1px solid rgba(207,232,255,.4); border-radius: 999px; padding: 4px 10px; white-space: nowrap; cursor: pointer; pointer-events: auto; transition: background .25s, color .25s, transform .25s; }
+    .lbl:hover { transform: scale(1.06); }
+    .lbl .e { margin-right: 4px; }
+    .lbl.on { background: var(--cta); color: #0F2A22; border-color: var(--cta); transform: scale(1.12); }
+    .lbl.extra { display: none; }
+    .showall .lbl.extra { display: block; }
+    .reading { font: 700 12px var(--body); color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.6); pointer-events: none; white-space: nowrap; }
+    .nolabels .lbl, .nolabels .reading { display: none !important; }
+
+    /* ---------- intro overlay ---------- */
+    #intro { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: rgba(11,42,74,.82); transition: opacity .6s; }
+    body.intro #stage > div { opacity: 0; }
+    #stage > div { transition: opacity .6s; }
+    #intro.hide { opacity: 0; pointer-events: none; }
+    #intro .box { text-align: center; max-width: 520px; padding: 24px; animation: pop .6s ease; }
+    #intro h1 { font: 800 clamp(1.8rem, 4vw, 2.6rem)/1.15 var(--head); margin: 0 0 10px; }
+    #intro p { color: #D8E8F8; font-size: 1.05rem; margin: 0 0 22px; }
+    #intro .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    #intro .btn { padding: 12px 22px; font-size: 1rem; }
+
+    @media (max-width: 900px) {
+      .actions .btn-ghost.home { display: none; }
+      #info { top: auto; bottom: 12px; left: 12px; right: 12px; width: auto; max-height: 34vh; }
+      #now { display: none; }
+      .hint { display: none; }
+      .modes button { padding: 7px 9px; font-size: .8rem; }
+      #tour { bottom: 12px; }
+    }
+  </style>
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body class="intro">
+  <div id="stage"></div>
+
+  <header class="top">
+    <a class="brand" href="index.html" aria-label="Brunei Solar home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#F2B72E"/><g stroke="#F2B72E" stroke-width="2.4" stroke-linecap="round"><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6.1 6.1l2.8 2.8M23.1 23.1l2.8 2.8M6.1 25.9l2.8-2.8M23.1 8.9l2.8-2.8"/></g></svg>
+      <span>Brunei Solar</span>
+    </a>
+    <div class="modes" role="tablist" aria-label="Time of day">
+      <button data-mode="day" class="on">☀️ Sunny day</button>
+      <button data-mode="evening">🌇 Evening</button>
+      <button data-mode="night">🌙 Night</button>
+      <button data-mode="blackout">⚡ Power cut</button>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="tourBtn">▶ Take the tour</button>
+      <a class="btn btn-ghost home" href="index.html">Home</a>
+    </div>
+  </header>
+
+  <!-- what's happening now -->
+  <aside class="card" id="now" aria-live="polite">
+    <h2 id="nowTitle">Sunny day</h2>
+    <p class="muted" id="nowSub"></p>
+    <div class="flows" id="flows"></div>
+    <ul class="story" id="story"></ul>
+    <div class="key">
+      <span style="--c:var(--solar)">power from the sun</span>
+      <span style="--c:var(--ac)">used in your home</span>
+      <span style="--c:var(--batt)">battery</span>
+      <span style="--c:var(--grid)">power grid</span>
+    </div>
+    <div class="toggles">
+      <label><input type="checkbox" id="tAll"> Show all parts</label>
+      <label><input type="checkbox" id="tSpin"> Slowly rotate</label>
+    </div>
+  </aside>
+
+  <!-- part details -->
+  <aside class="card hide" id="info">
+    <div class="big" id="infoIcon">🏠</div>
+    <h2 id="infoTitle"></h2>
+    <div id="infoBody"></div>
+    <div class="parts" id="parts"></div>
+  </aside>
+
+  <!-- guided tour -->
+  <section class="card hide" id="tour" aria-live="polite">
+    <div class="tour-anim" id="tourInner">
+      <div class="step" id="tourStep"></div>
+      <h2 id="tourTitle"></h2>
+      <p id="tourText"></p>
+    </div>
+    <div class="dots" id="tourDots"></div>
+    <div class="tour-nav">
+      <button class="link" id="tourSkip">Skip tour</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" id="tourBack">← Back</button>
+        <button class="btn btn-sun" id="tourNext">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="hint" id="hint">Drag to look around · scroll or pinch to zoom · tap any label</div>
+
+  <!-- intro -->
+  <div id="intro">
+    <div class="box">
+      <h1>How home solar works</h1>
+      <p>Follow the electricity from the sun to your fridge, your battery and the power grid, in under a minute.</p>
+      <div class="row">
+        <button class="btn btn-sun" id="startTour">▶ Start the 1-minute tour</button>
+        <button class="btn btn-ghost" id="explore">Explore on my own</button>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+const $ = id => document.getElementById(id);
+const C = { line: 0xCFE8FF, dim: 0x7FA9D1, fill: 0x8FC7FF, solar: 0xFFB020, ac: 0x4ADE80, grid: 0x60A5FA, batt: 0xC084FC, off: 0xF87171 };
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const lerp = (a, b, t) => a + (b - a) * t;
+
+// ---------- renderer / scene ----------
+const stage = $('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+const css = new CSS2DRenderer();
+css.domElement.style.cssText = 'position:absolute;top:0;pointer-events:none';
+stage.appendChild(css.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 300);
+camera.position.set(34, 22, 38);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 2.6, 0);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.49;
+controls.minDistance = 5; controls.maxDistance = 55;
+controls.autoRotateSpeed = 0.6;
+
+const g1 = new THREE.GridHelper(60, 60, 0x2B5D8F, 0x16416B); scene.add(g1);
+const g2 = new THREE.GridHelper(60, 12, 0x3A6EA3, 0x3A6EA3); g2.position.y = 0.002; scene.add(g2);
+
+// ---------- helpers ----------
+const pickables = [];
+function wire(geo, { color = C.line, fill = C.fill, opacity = 0.05, id = null } = {}) {
+  const grp = new THREE.Group();
+  const face = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: fill, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide }));
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), new THREE.LineBasicMaterial({ color }));
+  grp.add(face, edges); grp.userData.face = face; grp.userData.edges = edges;
+  if (id) { face.userData.id = id; pickables.push(face); }
+  return grp;
+}
+function box(w, h, d, pos, opts) { const g = wire(new THREE.BoxGeometry(w, h, d), opts); g.position.set(...pos); scene.add(g); return g; }
+const labelEls = {};
+function label(id, icon, text, pos, extra = false) {
+  const el = document.createElement('div'); el.className = 'lbl' + (extra ? ' extra' : '');
+  const e = document.createElement('span'); e.className = 'e'; e.textContent = icon;
+  el.append(e, document.createTextNode(text)); el.dataset.id = id;
+  el.addEventListener('click', ev => { ev.stopPropagation(); select(id, true); });
+  const o = new CSS2DObject(el); o.position.set(...pos); scene.add(o); labelEls[id] = el; return el;
+}
+function reading(pos) { const el = document.createElement('div'); el.className = 'reading'; const o = new CSS2DObject(el); o.position.set(...pos); scene.add(o); return el; }
+
+// ---------- house ----------
+const W = 10, D = 8, H = 3.2, Z = D / 2 + 0.16;
+box(W, H, D, [0, H / 2, 0], { opacity: 0.04 });
+const rs = new THREE.Shape(); rs.moveTo(-4.6, 0); rs.lineTo(4.6, 0); rs.lineTo(0, 2.5); rs.closePath();
+const roof = wire(new THREE.ExtrudeGeometry(rs, { depth: 11, bevelEnabled: false }), { opacity: 0.05 });
+roof.rotation.y = Math.PI / 2; roof.position.set(-5.5, H, 0); scene.add(roof);
+box(1.1, 2.1, 0.06, [-1.6, 1.05, D / 2 + 0.03], { color: C.dim, opacity: 0.02 });
+const windows = [box(1.6, 1.1, 0.06, [-3.6, 1.7, D / 2 + 0.03], { color: C.dim, fill: 0xFFD27A, opacity: 0.02 }),
+                 box(1.6, 1.1, 0.06, [0.6, 1.7, D / 2 + 0.03], { color: C.dim, fill: 0xFFD27A, opacity: 0.02 })];
+
+// ---------- solar panels (each drops onto the roof at start) ----------
+const slope = Math.atan2(2.5, 4.6);
+const pv = new THREE.Group();
+const PW = 1.13, PL = 2.28, cols = 7;
+const pvMat = new THREE.MeshBasicMaterial({ color: 0x1E4B7A, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
+const panels = [];
+for (let r = 0; r < 2; r++) for (let c = 0; c < cols; c++) {
+  const p = new THREE.Group();
+  const geo = new THREE.BoxGeometry(PW, 0.04, PL);
+  const m = new THREE.Mesh(geo, pvMat); m.userData.id = 'panels'; pickables.push(m); p.add(m);
+  p.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: C.line })));
+  const pts = [];
+  for (let k = 1; k < 6; k++) { const zz = -PL / 2 + k * PL / 6; pts.push(new THREE.Vector3(-PW / 2, .025, zz), new THREE.Vector3(PW / 2, .025, zz)); }
+  for (let k = 1; k < 3; k++) { const xx = -PW / 2 + k * PW / 3; pts.push(new THREE.Vector3(xx, .025, -PL / 2), new THREE.Vector3(xx, .025, PL / 2)); }
+  p.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x5E86B0 })));
+  p.userData.home = new THREE.Vector3((c - (cols - 1) / 2) * (PW + .04), 0, (r - .5) * (PL + .04));
+  p.userData.delay = 0.35 + (r * cols + c) * 0.09;
+  p.position.copy(p.userData.home); p.position.y = 9; p.visible = false;
+  pv.add(p); panels.push(p);
+}
+const railPts = [];
+for (const z of [-PL * .75, -PL * .25, PL * .25, PL * .75]) { const x = (cols * (PW + .04)) / 2 + .1; railPts.push(new THREE.Vector3(-x, -.08, z), new THREE.Vector3(x, -.08, z)); }
+pv.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(railPts), new THREE.LineBasicMaterial({ color: C.dim })));
+const railHit = new THREE.Mesh(new THREE.BoxGeometry(cols * (PW + .04), .1, .2), new THREE.MeshBasicMaterial({ visible: false }));
+railHit.position.set(0, -.08, PL * .75); railHit.userData.id = 'mounting'; pickables.push(railHit); pv.add(railHit);
+pv.rotation.x = slope;
+pv.position.set(0, H + 1.25 + .14 * Math.cos(slope), 2.3 + .14 * Math.sin(slope));
+scene.add(pv);
+
+// ---------- equipment ----------
+const parts3d = {};
+parts3d.dcbox = box(.32, .4, .14, [3.0, 2.55, Z], { color: C.solar, fill: C.solar, opacity: .15, id: 'dcbox' });
+parts3d.inverter = box(.55, .75, .22, [3.0, 1.65, Z + .04], { color: C.ac, fill: C.ac, opacity: .18, id: 'inverter' });
+parts3d.battery = box(.62, 1.05, .28, [4.05, .53, Z + .06], { color: C.batt, fill: C.batt, opacity: .08, id: 'battery' });
+parts3d.db = box(.45, .6, .12, [1.8, 1.55, Z - .02], { color: C.ac, fill: C.ac, opacity: .1, id: 'db' });
+parts3d.meter = box(.3, .42, .14, [-4.4, 1.55, Z], { color: C.grid, fill: C.grid, opacity: .18, id: 'meter' });
+parts3d.monitor = box(.1, .16, .05, [3.35, 1.95, Z + .17], { color: C.line, opacity: .3, id: 'monitor' });
+// battery charge level (animated)
+const battFill = new THREE.Mesh(new THREE.BoxGeometry(.5, 1, .2), new THREE.MeshBasicMaterial({ color: C.batt, transparent: true, opacity: .75 }));
+battFill.geometry.translate(0, .5, 0); battFill.position.set(4.05, .06, Z + .06); scene.add(battFill);
+const battText = reading([4.05, 1.25, Z + .35]);
+
+// appliances inside
+const loads = new THREE.Group(); scene.add(loads);
+const acUnit = wire(new THREE.BoxGeometry(1.0, .32, .25), { color: C.ac, opacity: .08, id: 'loads' }); acUnit.position.set(-2.2, 2.7, -3.8); loads.add(acUnit);
+const fridge = wire(new THREE.BoxGeometry(.7, 1.8, .7), { color: C.ac, opacity: .08, id: 'loads' }); fridge.position.set(2.8, .9, -3.2); loads.add(fridge);
+const bulb = new THREE.Mesh(new THREE.SphereGeometry(.16, 16, 12), new THREE.MeshBasicMaterial({ color: 0xFFE7A3 })); bulb.position.set(-.5, 2.9, 0); bulb.userData.id = 'loads'; pickables.push(bulb); loads.add(bulb);
+const glow = new THREE.Mesh(new THREE.SphereGeometry(.5, 16, 12), new THREE.MeshBasicMaterial({ color: 0xFFD27A, transparent: true, opacity: 0 })); glow.position.copy(bulb.position); scene.add(glow);
+parts3d.loads = loads;
+
+// grid pole
+const poleX = -9, poleZ = 6.5;
+const pole = wire(new THREE.CylinderGeometry(.08, .12, 8, 8), { color: C.grid, opacity: .15, id: 'grid' }); pole.position.set(poleX, 4, poleZ); scene.add(pole);
+const arm = wire(new THREE.BoxGeometry(1.6, .08, .08), { color: C.grid, opacity: .15, id: 'grid' }); arm.position.set(poleX, 7.6, poleZ); scene.add(arm);
+parts3d.grid = pole;
+const gridX = new THREE.Group(); scene.add(gridX);
+{ const m = new THREE.LineBasicMaterial({ color: C.off });
+  gridX.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(poleX - .8, 6.4, poleZ), new THREE.Vector3(poleX + .8, 8.8, poleZ)]), m));
+  gridX.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(poleX - .8, 8.8, poleZ), new THREE.Vector3(poleX + .8, 6.4, poleZ)]), m)); }
+
+// earthing
+const earth = wire(new THREE.CylinderGeometry(.03, .03, 1.4, 6), { color: 0x9AA5A0, opacity: .2, id: 'earth' }); earth.position.set(4.9, -.2, 4.8); scene.add(earth);
+const earthHit = new THREE.Mesh(new THREE.BoxGeometry(.4, 1.6, .4), new THREE.MeshBasicMaterial({ visible: false })); earthHit.position.copy(earth.position); earthHit.userData.id = 'earth'; pickables.push(earthHit); scene.add(earthHit);
+parts3d.earth = earth; parts3d.panels = pv; parts3d.mounting = pv;
+
+// ---------- sun & moon ----------
+const sunGroup = new THREE.Group(); scene.add(sunGroup);
+const sunBall = new THREE.Mesh(new THREE.SphereGeometry(1.1, 24, 16), new THREE.MeshBasicMaterial({ color: 0xFFC94A }));
+const sunHalo = new THREE.Mesh(new THREE.SphereGeometry(2.0, 24, 16), new THREE.MeshBasicMaterial({ color: 0xFFC94A, transparent: true, opacity: .18 }));
+sunGroup.add(sunBall, sunHalo);
+const moon = new THREE.Mesh(new THREE.SphereGeometry(.7, 20, 14), new THREE.MeshBasicMaterial({ color: 0xDDE7F5, transparent: true, opacity: 0 }));
+moon.position.set(10, 15, -12); scene.add(moon);
+const SUN_POS = { day: new THREE.Vector3(-8, 24, 12), evening: new THREE.Vector3(-26, 3, 12), night: new THREE.Vector3(-28, -8, 6), blackout: new THREE.Vector3(-7, 23, 12) };
+// photons from sun to panels
+const photons = [];
+for (let i = 0; i < 28; i++) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(.07, 8, 6), new THREE.MeshBasicMaterial({ color: 0xFFE08A, transparent: true }));
+  m.userData = { t: Math.random(), target: new THREE.Vector3((Math.random() - .5) * 7.5, H + 1.3 + (Math.random() - .5) * 1.6, 2.3 + (Math.random() - .5) * 2.4), speed: .35 + Math.random() * .25 };
+  scene.add(m); photons.push(m);
+}
+
+// ---------- cables + moving dots ----------
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const cables = {
+  dc:       { color: C.solar, pts: [V(3.3, H + .55, 3.75), V(3.3, H + .18, D / 2 + .35), V(3.3, H - .1, Z), V(3.05, 2.75, Z), V(3.0, 2.35, Z), V(3.0, 2.05, Z + .04)] },
+  batt:     { color: C.batt,  pts: [V(3.2, 1.27, Z + .1), V(3.6, 1.15, Z + .15), V(3.95, 1.07, Z + .15)] },
+  inv_db:   { color: C.ac,    pts: [V(2.72, 1.6, Z + .04), V(2.4, 1.6, Z), V(2.03, 1.6, Z - .02)] },
+  db_load:  { color: C.ac,    pts: [V(1.6, 1.85, Z - .05), V(1.6, 2.9, D / 2 - .2), V(-.5, 2.9, 0), V(-2.2, 2.9, -3.6)] },
+  db_mtr:   { color: C.ac,    pts: [V(1.8, 1.25, Z - .02), V(1.8, .35, Z), V(-4.4, .35, Z), V(-4.4, 1.34, Z)] },
+  mtr_grid: { color: C.grid,  pts: [V(-4.4, 1.76, Z), V(-4.4, 3.0, Z + .3), V(-6.5, 6.4, 5.6), V(poleX + .6, 7.65, poleZ)] },
+};
+for (const k in cables) {
+  const c = cables[k];
+  c.curve = new THREE.CatmullRomCurve3(c.pts, false, 'centripetal', .2);
+  c.line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c.curve.getPoints(80)), new THREE.LineBasicMaterial({ color: c.color, transparent: true, opacity: .5 }));
+  scene.add(c.line);
+  const len = c.curve.getLength(), n = Math.max(5, Math.round(len * 2.4));
+  c.dots = Array.from({ length: n }, (_, i) => { const d = new THREE.Mesh(new THREE.SphereGeometry(.07, 10, 8), new THREE.MeshBasicMaterial({ color: c.color, transparent: true })); d.userData.t = i / n; scene.add(d); return d; });
+  c.speed = .16 / Math.max(1, len / 4); c.dir = 0; c.vis = 0;
+}
+
+// ---------- highlight ring ----------
+const ring = new THREE.Mesh(new THREE.RingGeometry(.9, 1.0, 48), new THREE.MeshBasicMaterial({ color: 0xF2B72E, transparent: true, opacity: 0, side: THREE.DoubleSide, depthTest: false }));
+ring.renderOrder = 10; scene.add(ring);
+const ring2 = ring.clone(); ring2.material = ring.material.clone(); scene.add(ring2);
+
+// ---------- content ----------
+const PARTS = {
+  panels:   { icon: '☀️', name: 'Solar panels', pos: [0, H + 1.4, 2.3], size: 4.2, cam: [6, 9, 10],
+    plain: 'They catch sunlight and turn it into electricity. No fuel, no noise, no moving parts.',
+    why: 'This home has 14 panels. On a sunny day they make enough power to run the whole house and still have some left over.',
+    tech: ['14 × 580 W = 8.1 kWp array', 'Make DC electricity (photovoltaic effect)', 'Lose ~0.35% output per °C of heat', 'Coastal homes: IEC 61701 salt-mist rated'] },
+  inverter: { icon: '🧠', name: 'Inverter', pos: [3.0, 1.65, Z], size: .9, cam: [4, 2, 6],
+    plain: 'The brain of the system. It changes the panels\' electricity into the kind your home uses.',
+    why: 'It also decides where power goes: to your home, the battery or the grid. And it switches off the grid connection instantly in a power cut, to keep repair workers safe.',
+    tech: ['8 kW hybrid inverter, single-phase', 'Converts DC to 230 V AC, 50 Hz', 'MPPT finds the best output every second', 'Anti-islanding safety (IEC 62116)', 'Must be on the approved list in Brunei'] },
+  battery:  { icon: '🔋', name: 'Battery', pos: [4.05, .6, Z], size: 1.0, cam: [4, 2, 6],
+    plain: 'Saves extra solar power from the day so you can use it in the evening.',
+    why: 'It also keeps important lights and the fridge running during a power cut.',
+    tech: ['10 kWh usable, lithium iron phosphate (LFP)', 'Built-in battery management system (BMS)', 'About 6,000 charge cycles (~15 years)'] },
+  db:       { icon: '🗄️', name: 'Fuse box', pos: [1.8, 1.55, Z], size: .8, cam: [3, 2, 6],
+    plain: 'Your home\'s fuse box. Solar power joins your house wiring here.',
+    why: 'Electricity takes the easiest path, so your appliances always use the solar power first.',
+    tech: ['Distribution board with a dedicated solar breaker', '30 mA residual-current protection'] },
+  loads:    { icon: '🏠', name: 'Your appliances', pos: [-.5, 2.2, -1], size: 3.0, cam: [5, 6, 9],
+    plain: 'Lights, fridge, air-con, TV: everything that uses electricity in your home.',
+    why: 'In Brunei homes, air-con is often about half of all the electricity used, especially in the evening.',
+    tech: ['Typical use 2,000–3,000 kWh a month', 'Evening peak around 7–9 pm'] },
+  meter:    { icon: '🔢', name: 'Electricity meter', pos: [-4.4, 1.55, Z], size: .8, cam: [-2, 2, 6],
+    plain: 'Counts the electricity you buy from the grid and the extra solar you send back.',
+    why: 'Under Brunei\'s net-metering scheme, the power you send back becomes credit on your bill, kept for up to 12 months.',
+    tech: ['Two-way (import/export) net meter', 'From a registered meter vendor', 'Credits at the normal tariff, 12-month rollover'] },
+  grid:     { icon: '⚡', name: 'Power grid', pos: [poleX, 6, poleZ], size: 2.6, cam: [8, 3, 10],
+    plain: 'The national electricity network. It powers your home at night and takes your extra solar by day.',
+    why: 'Think of it as a big shared battery for the whole country.',
+    tech: ['Run by the Department of Electrical Services (DES)', '230 V, 50 Hz supply'] },
+  mounting: { icon: '🔩', name: 'Mounting rails', pos: [0, H + 1.2, 3.2], size: 3.8, cam: [5, 4, 8],
+    plain: 'Strong aluminium rails that hold the panels firmly on your roof.',
+    why: 'Fitted carefully so the roof stays leak-free, and checked by an engineer for strength.',
+    tech: ['Anodised aluminium, 4 rail runs', 'Structural assessment before installation'] },
+  dcbox:    { icon: '🛑', name: 'Safety switch', pos: [3.0, 2.55, Z], size: .6, cam: [3, 2, 5],
+    plain: 'An off-switch and lightning protection for the panels.',
+    why: 'Panels keep making power whenever the sun shines, so this lets technicians and firefighters work safely.',
+    tech: ['DC isolator, fuses', 'Surge protection device (SPD) for lightning', 'Genuine MC4 connectors'] },
+  monitor:  { icon: '📱', name: 'Monitoring', pos: [3.35, 1.95, Z], size: .5, cam: [3, 2, 5],
+    plain: 'Sends live data to an app on your phone.',
+    why: 'You can see how much power you make and save, and we get an alert if anything needs fixing.',
+    tech: ['Wi-Fi or 4G data logger', 'Feeds our online energy dashboard'] },
+  earth:    { icon: '🌍', name: 'Earthing', pos: [4.9, .2, 4.8], size: .7, cam: [3, 2, 5],
+    plain: 'A copper rod in the ground connected to the system\'s metal parts.',
+    why: 'If anything goes wrong, or lightning strikes nearby, the electricity goes safely into the ground.',
+    tech: ['Copper-bonded rod, 1.2 m+', 'Bonds frames, rails and inverter'] },
+};
+const MAIN = ['panels', 'inverter', 'battery', 'db', 'loads', 'meter', 'grid'];
+const EXTRA = ['mounting', 'dcbox', 'monitor', 'earth'];
+const LBL_POS = {
+  panels: [-2.6, H + 2.4, 2.0], inverter: [3.75, 1.9, Z + .5], battery: [4.9, 1.0, Z + .5], db: [1.2, 2.1, Z + .4],
+  loads: [-1.4, 3.4, -1.2], meter: [-4.4, 2.15, Z + .5], grid: [poleX, 8.4, poleZ],
+  mounting: [-5.0, H + 1.0, 3.4], dcbox: [3.0, 3.0, Z + .4], monitor: [3.9, 2.4, Z + .4], earth: [5.5, .2, 5.1],
+};
+for (const id of [...MAIN, ...EXTRA]) label(id, PARTS[id].icon, PARTS[id].name, LBL_POS[id], EXTRA.includes(id));
+const readings = { sun: reading([-3.6, H + 2.3, 1.2]), home: reading([-2.2, 1.9, .6]), grid: reading([-6.6, 5.6, 5.8]) };
+
+// ---------- modes ----------
+const MODES = {
+  day: { title: 'Sunny day', sub: '12:30 pm · clear sky', sun: 6.2, home: 1.9, batt: 2.0, grid: -2.3, level: 64,
+    flow: { dc: 1, batt: 1, inv_db: 1, db_load: 1, db_mtr: 1, mtr_grid: 1 },
+    story: ['The sun is making <strong>6.2 kW</strong> of power.', 'Your home uses <strong>1.9 kW</strong> of it, for free.', '<strong>2.0 kW</strong> charges the battery for tonight.', 'The extra <strong>2.3 kW</strong> goes to the grid and becomes <strong>credit on your bill</strong>.'] },
+  evening: { title: 'Evening', sub: '8:00 pm · air-con on', sun: 0, home: 4.1, batt: -3.5, grid: .6, level: 41,
+    flow: { dc: 0, batt: -1, inv_db: 1, db_load: 1, db_mtr: -1, mtr_grid: -1 },
+    story: ['The sun has set, so the panels rest.', 'Your home needs <strong>4.1 kW</strong> (air-con time).', 'The battery supplies <strong>3.5 kW</strong> from today\'s sunshine.', 'The grid quietly fills the small gap of <strong>0.6 kW</strong>.'] },
+  night: { title: 'Night', sub: '3:00 am · battery resting', sun: 0, home: 2.6, batt: 0, grid: 2.6, level: 20,
+    flow: { dc: 0, batt: 0, inv_db: 0, db_load: 1, db_mtr: -1, mtr_grid: -1 },
+    story: ['Your home uses <strong>2.6 kW</strong> from the grid.', 'This uses up the <strong>credits</strong> you earned during the day.', 'The battery keeps <strong>20%</strong> in reserve, just in case of a power cut.'] },
+  blackout: { title: 'Power cut', sub: '2:00 pm · the grid is down', sun: 4.0, home: 1.2, batt: 2.8, grid: null, level: 72,
+    flow: { dc: 1, batt: 1, inv_db: 1, db_load: 1, db_mtr: 0, mtr_grid: 0 },
+    story: ['The grid is down in your area.', 'For safety, the system <strong>disconnects from the grid instantly</strong>, protecting repair workers.', 'Your <strong>lights and fridge keep running</strong> on solar and battery.', 'When the grid returns, everything reconnects automatically.'] },
+};
+let mode = 'day', shown = { sun: 0, home: 0, batt: 0, grid: 0, level: 64 }, target = { ...MODES.day };
+let battLevel = 64, modeT = 1, prevBg = new THREE.Color(0x0B2A4A);
+const BG = { day: 0x0B2A4A, evening: 0x10223F, night: 0x061528, blackout: 0x0B2A4A };
+const fmt = (v, d = 1) => Math.abs(v).toFixed(d);
+
+function setMode(m) {
+  mode = m; target = MODES[m]; modeT = 0; prevBg = scene.background ? scene.background.clone() : new THREE.Color(BG.day);
+  document.querySelectorAll('.modes button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  $('nowTitle').textContent = target.title; $('nowSub').textContent = target.sub;
+  const story = $('story'); story.replaceChildren();
+  target.story.forEach((s, i) => { const li = document.createElement('li'); li.innerHTML = s; li.className = 'tour-anim'; li.style.animationDelay = (i * 0.12) + 's'; story.appendChild(li); });
+  for (const k in cables) cables[k].dir = target.flow[k] || 0;
+  if (m === 'blackout') flashT = 0;
+  renderFlows();
+}
+let flashT = 9;
+
+function renderFlows() {
+  const M = target, F = $('flows'); F.replaceChildren();
+  const rows = [
+    ['☀️', '🏠', '--solar', M.sun > 0 ? Math.min(M.sun, M.home) : 0, 'sun→home'],
+    ['🔋', '🏠', '--batt', M.batt < 0 ? -M.batt : 0, 'batt→home'],
+    ['☀️', '🔋', '--solar', M.batt > 0 ? M.batt : 0, 'sun→batt'],
+    M.grid === null ? ['⚡', '🏠', '--off', null, 'grid'] : M.grid < 0 ? ['☀️', '⚡', '--grid', -M.grid, 'export'] : ['⚡', '🏠', '--grid', M.grid, 'import'],
+  ];
+  rows.forEach(([a, b, c, v]) => {
+    const r = document.createElement('div'); r.className = 'flow' + (!v ? ' idle' : '');
+    r.style.setProperty('--c', `var(${c})`);
+    const i1 = document.createElement('span'); i1.className = 'ic'; i1.textContent = a;
+    const pipe = document.createElement('div'); pipe.className = 'pipe';
+    const i2 = document.createElement('span'); i2.className = 'ic'; i2.textContent = b;
+    const val = document.createElement('b'); val.textContent = v === null ? 'off' : v ? v.toFixed(1) + ' kW' : '—';
+    if (v === null) val.style.color = 'var(--off)';
+    r.append(i1, pipe, i2, val); F.appendChild(r);
+  });
+}
+document.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => { stopTour(); setMode(b.dataset.mode); }));
+
+// ---------- camera fly-to ----------
+let fly = null;
+function flyTo(tgt, camPos, dur = 1.6) {
+  fly = { t: 0, dur, fromT: controls.target.clone(), toT: new THREE.Vector3(...tgt), fromC: camera.position.clone(), toC: new THREE.Vector3(...camPos) };
+}
+controls.addEventListener('start', () => { fly = null; });
+const HOME_VIEW = () => innerWidth < 900 ? [[0, -.6, 0], [17, 12, 21]] : [[0, 2.6, 0], [15, 10, 17]];
+function focusPart(id) {
+  const p = PARTS[id]; const t = p.pos;
+  flyTo(t, [t[0] + p.cam[0], t[1] + p.cam[1], t[2] + p.cam[2]]);
+}
+
+// ---------- selection ----------
+let selected = null;
+const partsBox = $('parts');
+for (const id of [...MAIN, ...EXTRA]) {
+  const b = document.createElement('button'); b.textContent = PARTS[id].icon + ' ' + PARTS[id].name; b.dataset.id = id;
+  b.addEventListener('click', () => select(id, true)); partsBox.appendChild(b);
+}
+function select(id, fly = false) {
+  selected = id;
+  for (const k in labelEls) labelEls[k].classList.toggle('on', k === id);
+  partsBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  if (!id) { $('info').classList.add('hide'); return; }
+  const p = PARTS[id];
+  if (EXTRA.includes(id)) labelEls[id].style.display = 'block';
+  $('infoIcon').textContent = p.icon; $('infoTitle').textContent = p.name;
+  const body = $('infoBody'); body.replaceChildren();
+  const p1 = document.createElement('p'); p1.textContent = p.plain;
+  const p2 = document.createElement('p'); p2.textContent = p.why;
+  const det = document.createElement('details'); const sm = document.createElement('summary'); sm.textContent = 'Technical details';
+  const ul = document.createElement('ul'); p.tech.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+  det.append(sm, ul); body.append(p1, p2, det);
+  if (!tourOn) $('info').classList.remove('hide');
+  if (fly) focusPart(id);
+}
+
+// click on 3D objects
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+let downAt = null;
+renderer.domElement.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5 || tourOn) return;
+  const r = renderer.domElement.getBoundingClientRect();
+  mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  const hit = ray.intersectObjects(pickables, false)[0];
+  if (hit) select(hit.object.userData.id, true); else select(null);
+});
+renderer.domElement.addEventListener('pointermove', e => {
+  const r = renderer.domElement.getBoundingClientRect();
+  mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  renderer.domElement.style.cursor = ray.intersectObjects(pickables, false).length ? 'pointer' : 'grab';
+});
+$('tAll').addEventListener('change', e => document.body.classList.toggle('showall', e.target.checked));
+$('tSpin').addEventListener('change', e => { controls.autoRotate = e.target.checked; });
+
+// ---------- guided tour ----------
+const TOUR = [
+  { title: 'Meet a solar home', text: 'This is a typical Brunei family home with solar panels on the roof and a battery on the wall. Let\'s follow the electricity, step by step.', mode: 'day', part: null },
+  { title: 'Sunlight hits the panels', text: 'The solar panels catch sunlight and turn it into electricity. No fuel, no noise, no moving parts.', mode: 'day', part: 'panels' },
+  { title: 'The inverter makes it usable', text: 'Panel electricity isn\'t the kind your home uses. The inverter, the "brain", converts it and decides where it goes.', mode: 'day', part: 'inverter' },
+  { title: 'Your home uses it first', text: 'Lights, fridge and air-con run on the solar power first. That\'s electricity you don\'t have to buy.', mode: 'day', part: 'loads' },
+  { title: 'Extra power fills the battery', text: 'Whatever your home doesn\'t need right now charges the battery, saving it for the evening.', mode: 'day', part: 'battery' },
+  { title: 'The rest earns you credit', text: 'When the battery is full, extra power flows to the grid. The meter counts it, and you get credit on your electricity bill.', mode: 'day', part: 'meter' },
+  { title: 'After sunset', text: 'In the evening the battery powers your home with today\'s sunshine. If you need more, the grid fills the gap automatically.', mode: 'evening', part: 'battery' },
+  { title: 'Even in a power cut', text: 'If the grid goes down, the system disconnects instantly to keep repair workers safe, and keeps your lights and fridge running from the sun and battery.', mode: 'blackout', part: 'grid' },
+  { title: 'That\'s how home solar works!', text: 'Tap any label to learn more, or try Sunny day, Evening, Night and Power cut at the top.', mode: 'day', part: null, end: true },
+];
+let tourOn = false, step = 0;
+const dotsBox = $('tourDots'); TOUR.forEach(() => dotsBox.appendChild(document.createElement('i')));
+function showStep(i) {
+  step = Math.max(0, Math.min(TOUR.length - 1, i)); const s = TOUR[step];
+  const inner = $('tourInner'); inner.classList.remove('tour-anim'); void inner.offsetWidth; inner.classList.add('tour-anim');
+  $('tourStep').textContent = s.end ? 'Done' : step === 0 ? 'Welcome' : `Step ${step} of ${TOUR.length - 2}`;
+  $('tourTitle').textContent = s.title; $('tourText').textContent = s.text;
+  dotsBox.querySelectorAll('i').forEach((d, k) => d.classList.toggle('on', k === step));
+  $('tourBack').style.visibility = step ? 'visible' : 'hidden';
+  $('tourNext').textContent = s.end ? 'Explore on my own' : 'Next →';
+  if (mode !== s.mode) setMode(s.mode);
+  select(s.part);
+  if (s.part) focusPart(s.part); else { const [t, c] = HOME_VIEW(); flyTo(t, c); }
+}
+function closeIntro() { $('intro').classList.add('hide'); document.body.classList.remove('intro'); }
+function startTour() { tourOn = true; closeIntro(); $('tour').classList.remove('hide'); $('info').classList.add('hide'); $('now').classList.toggle('hide', innerWidth < 900); $('hint').style.opacity = 0; showStep(0); }
+function stopTour() { if (!tourOn) return; tourOn = false; $('tour').classList.add('hide'); $('hint').style.opacity = 1; $('now').classList.remove('hide'); try { localStorage.setItem('bs-bp-toured', '1'); } catch {} }
+$('tourNext').addEventListener('click', () => { if (TOUR[step].end) { stopTour(); select(null); const [t, c] = HOME_VIEW(); flyTo(t, c); } else showStep(step + 1); });
+$('tourBack').addEventListener('click', () => showStep(step - 1));
+$('tourSkip').addEventListener('click', () => { stopTour(); select(null); const [t, c] = HOME_VIEW(); flyTo(t, c); });
+$('tourBtn').addEventListener('click', startTour);
+$('startTour').addEventListener('click', startTour);
+$('explore').addEventListener('click', () => { closeIntro(); try { localStorage.setItem('bs-bp-toured', '1'); } catch {} });
+addEventListener('keydown', e => { if (!tourOn) return; if (e.key === 'ArrowRight') $('tourNext').click(); if (e.key === 'ArrowLeft' && step) showStep(step - 1); if (e.key === 'Escape') $('tourSkip').click(); });
+
+// ---------- resize ----------
+function resize() {
+  renderer.setSize(innerWidth, innerHeight); css.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+// ---------- animation loop ----------
+const clock = new THREE.Clock();
+let elapsed = 0;
+const tmp = new THREE.Vector3(), sunCol = new THREE.Color();
+setMode('day');
+{ const [t, c] = HOME_VIEW(); flyTo(t, c, 2.6); }
+let seen = false; try { seen = localStorage.getItem('bs-bp-toured') === '1'; } catch {}
+if (seen) closeIntro();
+
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), .05); elapsed += dt;
+  modeT = Math.min(1, modeT + dt / 1.4); const mt = ease(modeT);
+
+  // intro: panels drop onto the roof
+  for (const p of panels) {
+    const k = (elapsed - p.userData.delay) / .6;
+    if (k <= 0) continue; p.visible = true;
+    const e = Math.min(1, k); p.position.y = lerp(9, 0, 1 - Math.pow(1 - e, 3)) + (e < 1 ? 0 : 0);
+  }
+  const ready = elapsed > 0.35 + 14 * .09 + .6;
+
+  // sky + sun + moon
+  scene.background = prevBg.clone().lerp(new THREE.Color(BG[mode]), mt);
+  sunGroup.position.lerp(SUN_POS[mode], .04);
+  sunCol.set(mode === 'evening' ? 0xFF8A3D : 0xFFC94A); sunBall.material.color.lerp(sunCol, .05); sunHalo.material.color.copy(sunBall.material.color);
+  sunHalo.scale.setScalar(1 + Math.sin(elapsed * 2) * .08);
+  moon.material.opacity = lerp(moon.material.opacity, mode === 'night' ? 1 : 0, .05);
+  const sunOn = target.sun > 0;
+  pvMat.color.lerp(new THREE.Color(sunOn ? 0x2A6AA8 : 0x15314F), .05);
+  for (const ph of photons) {
+    ph.visible = sunOn && ready;
+    if (!ph.visible) continue;
+    ph.userData.t += ph.userData.speed * dt; if (ph.userData.t > 1) ph.userData.t -= 1;
+    ph.position.lerpVectors(sunGroup.position, ph.userData.target, ph.userData.t);
+    ph.material.opacity = Math.sin(ph.userData.t * Math.PI);
+  }
+
+  // flowing electricity
+  for (const k in cables) {
+    const c = cables[k];
+    c.vis = lerp(c.vis, c.dir && ready ? 1 : 0, .08);
+    c.line.material.opacity = .15 + c.vis * .65;
+    c.dots.forEach(d => {
+      d.visible = c.vis > .02; if (!d.visible) return;
+      if (c.dir) d.userData.t = (d.userData.t + c.dir * c.speed * dt + 1) % 1;
+      d.position.copy(c.curve.getPointAt(d.userData.t)); d.material.opacity = c.vis;
+    });
+  }
+
+  // numbers count towards the new values
+  for (const k of ['sun', 'home', 'batt']) shown[k] = lerp(shown[k], target[k], .08);
+  shown.grid = target.grid === null ? shown.grid : lerp(shown.grid, target.grid, .08);
+  battLevel = lerp(battLevel, target.level, .02) + (target.batt > 0 ? dt * .4 : target.batt < 0 ? -dt * .4 : 0);
+  battLevel = Math.max(15, Math.min(98, battLevel));
+  battFill.scale.y = .92 * battLevel / 100;
+  battFill.material.color.set(battLevel < 25 ? 0xF87171 : C.batt);
+  battText.textContent = `🔋 ${Math.round(battLevel)}%` + (target.batt > 0 ? ' ↑' : target.batt < 0 ? ' ↓' : '');
+  readings.sun.textContent = shown.sun > .05 ? `☀️ ${fmt(shown.sun)} kW` : '';
+  readings.home.textContent = `🏠 using ${fmt(shown.home)} kW`;
+  if (target.grid === null) { readings.grid.textContent = '⚠ GRID DOWN'; readings.grid.style.color = '#F87171'; }
+  else { readings.grid.style.color = '#fff'; readings.grid.textContent = shown.grid < -.05 ? `→ sending ${fmt(shown.grid)} kW` : shown.grid > .05 ? `← buying ${fmt(shown.grid)} kW` : ''; }
+
+  // windows light up after dark, house lights flicker during a power cut
+  const dark = mode === 'evening' || mode === 'night';
+  windows.forEach(w => { w.userData.face.material.opacity = lerp(w.userData.face.material.opacity, dark ? .45 : .02, .05); });
+  flashT += dt;
+  const flicker = mode === 'blackout' && flashT < 1.2 ? (Math.sin(flashT * 40) > 0 ? 1 : .1) : 1;
+  glow.material.opacity = lerp(glow.material.opacity, (dark ? .35 : .08) * flicker, .2);
+  gridX.visible = mode === 'blackout' && Math.sin(elapsed * 6) > -.3;
+  parts3d.meter.userData.edges.material.color.set(mode === 'blackout' && Math.sin(elapsed * 6) > 0 ? C.off : C.grid);
+
+  // highlight ring around the selected part
+  if (selected) {
+    const p = PARTS[selected]; ring.position.set(...p.pos); ring2.position.set(...p.pos);
+    ring.lookAt(camera.position); ring2.lookAt(camera.position);
+    const s = p.size * (1 + .08 * Math.sin(elapsed * 4));
+    ring.scale.setScalar(s); ring.material.opacity = lerp(ring.material.opacity, .95, .1);
+    const k = (elapsed * .8) % 1; ring2.scale.setScalar(p.size * (1 + k * .8)); ring2.material.opacity = (1 - k) * .6;
+  } else { ring.material.opacity = lerp(ring.material.opacity, 0, .15); ring2.material.opacity = 0; }
+
+  // camera flight
+  if (fly) {
+    fly.t = Math.min(1, fly.t + dt / fly.dur); const e = ease(fly.t);
+    controls.target.lerpVectors(fly.fromT, fly.toT, e); camera.position.lerpVectors(fly.fromC, fly.toC, e);
+    if (fly.t >= 1) fly = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  css.render(scene, camera);
+});
+window.__bp = { setMode, select, startTour, showStep };
+</script>
+</body>
+</html>
