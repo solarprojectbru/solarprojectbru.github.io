@@ -111,6 +111,8 @@ if (slider) {
     if (count) count.textContent = String(i + 1).padStart(2, '0');
   };
   slider.querySelector('.next').addEventListener('click', () => go(i + 1));
+  // clicking anywhere on the picture moves to the next slide
+  track.addEventListener('click', e => { if (!e.target.closest('a, button')) go(i + 1); });
   slider.querySelector('.prev').addEventListener('click', () => go(i - 1));
   dots.forEach((d, k) => d.addEventListener('click', () => go(k)));
   slider.addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(i + 1); if (e.key === 'ArrowLeft') go(i - 1); });
