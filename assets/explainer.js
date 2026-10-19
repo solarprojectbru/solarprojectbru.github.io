@@ -25,6 +25,14 @@
   const chapters = [...root.querySelectorAll('.ex-chapters button')];
   const langBtn = $('.ex-lang'), muteBtn = $('.ex-mute'), stepLabel = $('.ex-step');
   const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+  const card = $('.ex-card');
+  const CARDS = {
+    1: ['Free site survey', 'We check your roof, shading, wiring and 12 months of electricity bills.'],
+    2: ['Design & quote', 'A system sized to your usage, with a clear price, expected output and payback.'],
+    3: ['Approvals', 'We prepare the net-metering application and engineering drawings for the authorities.'],
+    4: ['Installation', 'Usually 1–3 days for a home. Tidy cabling, safe roof work, full testing.'],
+    5: ['Monitor & care', 'Watch your output live on your phone. We check and clean the system on a schedule.'],
+  };
 
   let i = 0, playing = false, lang = 'ms', muted = !synth, timer = null, startedAt = 0, sceneMs = 0, raf = 0;
 
@@ -54,6 +62,17 @@
       el.classList.toggle('on', false);
       if (on) { void el.getBoundingClientRect(); el.classList.add('on'); }
     });
+    // step card pops in from the side
+    if (card) {
+      const c = CARDS[s.step];
+      card.classList.remove('show');
+      if (c) {
+        card.querySelector('.num').textContent = s.step;
+        card.querySelector('h4').textContent = c[0];
+        card.querySelector('p').textContent = c[1];
+        void card.offsetWidth; card.classList.add('show');
+      }
+    }
     sub.textContent = s[lang];
     sub.classList.remove('pop'); void sub.offsetWidth; sub.classList.add('pop');
     stepLabel.textContent = s.step ? (lang === 'ms' ? `Langkah ${s.step} / 5` : `Step ${s.step} of 5`) : '';

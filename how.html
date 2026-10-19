@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=24">
+  <link rel="stylesheet" href="assets/style.css?v=26">
 </head>
 <body>
 
@@ -99,7 +99,7 @@
             <!-- 2: design & quote: dashed layout lines, price tag, payback bars -->
             <g class="scene" data-key="s2">
               <g transform="translate(450 180) rotate(32.9)"><rect class="ex-dash" x="12" y="-20" width="168" height="22" fill="none" stroke="#8DC63F" stroke-width="2" stroke-dasharray="6 6"/></g>
-              <g class="ex-tag" transform="translate(150 200)">
+              <g class="ex-tag" transform="translate(300 70)">
                 <path d="M0 0h110l30 30-30 30H0z" fill="#8DC63F"/><circle cx="118" cy="30" r="6" fill="#1B1A31"/>
                 <text x="16" y="40" font-family="Lato, Arial, sans-serif" font-weight="900" font-size="26" fill="#fff">B$</text>
               </g>
@@ -114,10 +114,10 @@
 
             <!-- 3: approvals: documents slide in, stamp comes down -->
             <g class="scene" data-key="s3">
-              <g class="ex-doc d1" transform="translate(140 190)"><rect width="120" height="150" rx="6" fill="#F5F6F8"/><path d="M18 30h84M18 52h84M18 74h60M18 96h84M18 118h50" stroke="#B9BAC9" stroke-width="6" stroke-linecap="round"/></g>
-              <g class="ex-doc d2" transform="translate(700 200)"><rect width="120" height="150" rx="6" fill="#F5F6F8"/><path d="M20 120 L60 40 L100 120 Z M30 100h60" fill="none" stroke="#2A78D6" stroke-width="4"/></g>
-              <g class="ex-stamp" transform="translate(760 150)"><rect x="-30" y="-50" width="60" height="40" rx="6" fill="#8DC63F"/><rect x="-12" y="-80" width="24" height="34" rx="6" fill="#6FA52A"/><rect x="-40" y="-12" width="80" height="14" rx="3" fill="#6FA52A"/></g>
-              <g class="ex-approved" transform="translate(760 290) rotate(-12)"><rect x="-58" y="-24" width="116" height="48" rx="6" fill="none" stroke="#8DC63F" stroke-width="5"/><path d="M-30 0l14 14 30-28" stroke="#8DC63F" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g class="ex-doc d1" transform="translate(640 200)"><rect width="120" height="150" rx="6" fill="#F5F6F8"/><path d="M18 30h84M18 52h84M18 74h60M18 96h84M18 118h50" stroke="#B9BAC9" stroke-width="6" stroke-linecap="round"/></g>
+              <g class="ex-doc d2" transform="translate(790 210)"><rect width="120" height="150" rx="6" fill="#F5F6F8"/><path d="M20 120 L60 40 L100 120 Z M30 100h60" fill="none" stroke="#2A78D6" stroke-width="4"/></g>
+              <g class="ex-stamp" transform="translate(850 160)"><rect x="-30" y="-50" width="60" height="40" rx="6" fill="#8DC63F"/><rect x="-12" y="-80" width="24" height="34" rx="6" fill="#6FA52A"/><rect x="-40" y="-12" width="80" height="14" rx="3" fill="#6FA52A"/></g>
+              <g class="ex-approved" transform="translate(850 300) rotate(-12)"><rect x="-58" y="-24" width="116" height="48" rx="6" fill="none" stroke="#8DC63F" stroke-width="5"/><path d="M-30 0l14 14 30-28" stroke="#8DC63F" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
             </g>
 
             <!-- 4: installation: panels drop in (driven by .ex-panels), spark and test check -->
@@ -145,6 +145,7 @@
             </g>
           </svg>
 
+          <div class="ex-card" aria-hidden="true"><span class="num">1</span><h4></h4><p></p></div>
           <p class="ex-step"></p>
           <p class="ex-sub" aria-live="polite"></p>
           <button class="ex-bigplay" aria-label="Play the video">
@@ -175,13 +176,6 @@
 
   <section class="section alt" id="how">
     <div class="wrap">
-      <ol class="steps">
-        <li><span>1</span><h3>Free site survey</h3><p>We check your roof, shading, wiring and 12 months of electricity bills.</p></li>
-        <li><span>2</span><h3>Design &amp; quote</h3><p>A system sized to your usage, with a clear price, expected output and payback.</p></li>
-        <li><span>3</span><h3>Approvals</h3><p>We prepare the net-metering application and engineering drawings for the authorities.</p></li>
-        <li><span>4</span><h3>Installation</h3><p>Usually 1–3 days for a home. Tidy cabling, safe roof work, full testing.</p></li>
-        <li><span>5</span><h3>Monitor &amp; care</h3><p>Watch your output live on your phone. We check and clean the system on a schedule.</p></li>
-      </ol>
 
       <div class="bp-feature">
         <div class="bp-text">
@@ -230,6 +224,6 @@
 </footer>
 
 <script src="assets/main.js?v=14"></script>
-<script src="assets/explainer.js?v=2"></script>
+<script src="assets/explainer.js?v=3"></script>
 </body>
 </html>
