@@ -1,84 +1,213 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <title>Brunei Solar — Your trusted local solar installer in Brunei</title>
-  <meta name="description" content="Rooftop solar and battery systems for homes, businesses, institutions and remote sites across Brunei Darussalam.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=28">
-  <script>
-    // header colour: dark (default) or light, remembered across pages
-    (function () {
-      var root = document.documentElement;
-      try { if (localStorage.getItem('bs-header') === 'light') root.classList.add('header-light'); } catch (e) {}
-      document.addEventListener('click', function (e) {
-        var b = e.target.closest && e.target.closest('#themeToggle');
-        if (!b) return;
-        var light = root.classList.toggle('header-light');
-        b.setAttribute('aria-label', light ? 'Switch top bar to dark mode' : 'Switch top bar to white mode');
-        try { localStorage.setItem('bs-header', light ? 'light' : 'dark'); } catch (e2) {}
-      });
-    })();
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Brunei Solar: rooftop solar and battery systems in Brunei</title>
+<meta name="description" content="Rooftop solar and battery systems for Brunei Darussalam. Free site survey, net-metering approvals handled, serving all four districts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --u:min(calc(100vw/1600),calc(100vh/900));
+  --k:1;--k2:1;--dip:0;
+  --ink:color-mix(in srgb,#14202f calc((1 - var(--k))*100%),#fff);
+  --nav:color-mix(in srgb,#1b2736 calc((1 - var(--k))*100%),#eef1f6);
+  --soft:color-mix(in srgb,#1b2736 calc((1 - var(--k))*100%),#dfe5ee);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b1426}
+body{font-family:"Instrument Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.hero{position:relative;height:100svh;min-height:520px;overflow:hidden;isolation:isolate;background:#0b1426}
+.layer,.layer img{position:absolute;inset:0;width:100%;height:100%}
+.layer img{display:block;object-fit:cover;object-position:50% 62%}
+.sky img{filter:blur(calc(18*var(--u)));transform:scale(1.12)}
+#skyN{opacity:var(--k)}
+.home{will-change:transform;transform:translate3d(0,var(--sink,0px),0)}
+.home .set{position:absolute;inset:0;visibility:hidden}
+.home .set.is-on{visibility:visible}
+.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:translateY(var(--off,0%));-webkit-mask-image:linear-gradient(transparent,#000 24%);mask-image:linear-gradient(transparent,#000 24%)}
+#setM{--off:6%}#setN{--off:14%}
+#setM .photo,#skyM{object-position:50% 58%}
+.tilt{position:absolute;inset:0;pointer-events:none;-webkit-backdrop-filter:blur(calc(9*var(--u)));backdrop-filter:blur(calc(9*var(--u)));-webkit-mask-image:linear-gradient(transparent 70%,#000 92%);mask-image:linear-gradient(transparent 70%,#000 92%)}
+#fog{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ui{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.ui a,.ui button{pointer-events:auto}
+.bar{width:100%;display:flex;align-items:center;padding:calc(22*var(--u)) calc(38*var(--u)) 0;color:var(--nav)}
+.logo{display:flex;align-items:center;gap:calc(9*var(--u));font-size:calc(25*var(--u));font-weight:500;letter-spacing:-.025em;color:var(--ink);flex:1 1 0}
+.logo svg{width:calc(38*var(--u));height:calc(38*var(--u));flex:none}
+.links{display:flex;gap:calc(42*var(--u));list-style:none;font-size:calc(16.5*var(--u));font-weight:500;opacity:calc(1 - var(--dip)*.82)}
+.side{flex:1 1 0;display:flex;align-items:center;justify-content:flex-end;gap:calc(40*var(--u));font-size:calc(16.5*var(--u));font-weight:500}
+.side>a:first-child{opacity:calc(1 - var(--dip)*.82)}
+.cta{display:inline-flex;align-items:center;height:calc(46*var(--u));padding:0 calc(26*var(--u));border-radius:99px;
+  background:color-mix(in srgb,#0d1117 calc((1 - var(--k))*100%),#fff);color:color-mix(in srgb,#fff calc((1 - var(--k))*100%),#0d1117);opacity:calc(1 - var(--dip)*.62);transition:transform .25s}
+.cta:hover{transform:translateY(-1px)}
+.cta{white-space:nowrap}.cta .short{display:none}
+h1{margin-top:calc(58*var(--u));text-align:center;font-size:calc(64*var(--u));line-height:1.09;font-weight:500;letter-spacing:-.022em;color:var(--ink)}
+h1 span{display:block}
+h1 .l1,h1 .y{opacity:calc(1 - var(--dip)*.8)}
+h1 i{font-style:normal;color:color-mix(in srgb,#14202f calc((1 - var(--k2))*42%),color-mix(in srgb,#fff calc(var(--k2)*100%),#7c8794))}
+h1 .y{display:inline}
+.dock{margin-top:auto;padding-bottom:calc(40*var(--u));display:flex;flex-direction:column;align-items:center}
+.toggle{position:relative;display:grid;grid-template-columns:1fr 1fr;width:calc(524*var(--u));height:calc(86*var(--u));padding:calc(2*var(--u));border-radius:calc(16*var(--u));overflow:hidden;
+  background:rgba(120,132,140,.34);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(calc(14*var(--u)));backdrop-filter:blur(calc(14*var(--u)))}
+.toggle button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(3*var(--u));border-radius:calc(13*var(--u));color:#fff;overflow:hidden}
+.toggle button:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,#f7f8dc,#e2ee9f 90%);box-shadow:inset 0 0 calc(18*var(--u)) rgba(255,255,255,.65);opacity:var(--on)}
+.toggle b,.toggle small{position:relative;color:color-mix(in srgb,#1c2316 calc(var(--on)*100%),#fff)}
+.toggle b{font-size:calc(23*var(--u));font-weight:500;letter-spacing:-.012em}
+.toggle small{font-size:calc(15*var(--u));opacity:.72}
+.toggle button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+#bm{--on:calc(1 - var(--k))}#bn{--on:var(--k)}
+.cap{margin-top:calc(22*var(--u));text-align:center;font-size:calc(16.4*var(--u));line-height:1.3;color:var(--soft)}
+.credit{position:absolute;right:calc(14*var(--u));bottom:calc(10*var(--u));z-index:3;font-size:11px;color:rgba(255,255,255,.55);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+@media (max-width:820px){
+  .credit{display:none}
+  :root{--u:1px}
+  .bar{padding:16px 16px 0}
+  .logo{font-size:21px}.logo svg{width:32px;height:32px}
+  .links,.side>a:first-child{display:none}
+  .cta{height:40px;padding:0 16px;font-size:14px}
+  .cta .full{display:none}.cta .short{display:inline}
+  h1{margin-top:34px;padding:0 16px;font-size:clamp(30px,9vw,56px)}
+  .layer img,.home .photo{object-position:50% 50%!important}
+  #setM{--off:8%}#setN{--off:18%}
+  #setM .photo,#skyM{object-position:50% 62%!important}
+  .dock{width:100%;padding:0 16px 24px}
+  .toggle{width:100%;max-width:440px;height:74px}
+  .toggle b{font-size:19px}.toggle small{font-size:13px}
+  .cap{font-size:14px;max-width:360px}
+  .cap br{display:none}
+}
+</style>
 </head>
-<body class="home">
-
-<header class="site-header">
-  <div class="wrap bar">
-    <a href="index.html" class="brand" aria-label="Brunei Solar home">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#F2B72E"/><g stroke="#F2B72E" stroke-width="2.4" stroke-linecap="round"><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6.1 6.1l2.8 2.8M23.1 23.1l2.8 2.8M6.1 25.9l2.8-2.8M23.1 8.9l2.8-2.8"/></g></svg>
-      <span>Brunei Solar</span>
-    </a>
-    <nav class="nav" id="nav">
-      <a href="why.html">Why Brunei Solar</a>
-      <div class="has-sub"><a href="how.html">How it works</a>
-        <div class="sub"><a href="how.html">Our 5-step process</a><a href="blueprint.html">3D system blueprint</a></div></div>
-      <div class="has-sub"><a href="residential.html">Residential</a>
-        <div class="sub"><a href="residential.html">Home solar options</a><a href="savings.html">Savings estimator</a></div></div>
-      <div class="has-sub"><a href="pilot.html">Pilot programme</a>
-        <div class="sub"><a href="pilot.html">About the pilot</a><a href="dashboard.html">Pilot dashboard</a></div></div>
-      <div class="has-sub cta"><a href="contact.html" class="btn btn-sm">Talk to our team</a>
-        <div class="sub right"><a href="contact.html">Contact us</a><a href="contact.html#faq">FAQ</a></div></div>
-    </nav>
-    <button class="theme-toggle" id="themeToggle" aria-label="Switch top bar to white mode" title="White / dark top bar"><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
-    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+<body>
+<main class="hero">
+  <div class="layer sky">
+    <img id="skyM" alt="" src="https://images.unsplash.com/photo-1777858344918-ee54fb902d23?auto=format&amp;fit=crop&amp;w=1200&amp;q=60">
+    <img id="skyN" alt="" src="https://images.unsplash.com/photo-1649437647110-54e7ad785230?auto=format&amp;fit=crop&amp;w=1200&amp;q=60">
   </div>
-</header>
-
-<main id="top">
-  <h1 class="sr-only">Brunei Solar: rooftop solar and battery systems in Brunei</h1>
-  <section class="slider" aria-roledescription="carousel" aria-label="Highlights" tabindex="0">
-    <div class="slides">
-      <div class="slide" style="--img:url('https://images.unsplash.com/photo-1705583855040-3c25b4a9eab9?auto=format&fit=crop&w=2400&q=80')" role="img" aria-roledescription="slide" aria-label="1 of 4: Omar Ali Saifuddien Mosque reflected in the lagoon, Bandar Seri Begawan"></div>
-      <div class="slide diagram" style="--img:url('/assets/exploded-panel.svg')" role="img" aria-roledescription="slide" aria-label="2 of 4: Exploded view of a solar panel: tempered glass, EVA, solar cells, EVA, backsheet, aluminium frame and junction box"></div>
-      <div class="slide" style="--img:url('https://images.unsplash.com/photo-1635424709870-cdc6e64f0e20?auto=format&fit=crop&w=2400&q=80')" role="img" aria-roledescription="slide" aria-label="3 of 4: Two installers in safety harnesses fitting solar panels on a roof"></div>
-      <div class="slide" style="--img:url('https://images.unsplash.com/photo-1709808972516-cfcd9bc84c45?auto=format&fit=crop&w=2400&q=80')" role="img" aria-roledescription="slide" aria-label="4 of 4: Water taxi passing the stilt houses of Kampong Ayer, Brunei"></div>
+  <div class="layer home">
+    <div class="set" id="setM"><img class="photo" alt="Jame' Asr Hassanil Bolkiah Mosque at sunrise, Brunei" src="https://images.unsplash.com/photo-1777858344918-ee54fb902d23?auto=format&amp;fit=crop&amp;w=2400&amp;q=80"></div>
+    <div class="set is-on" id="setN"><img class="photo" alt="Jame' Asr Hassanil Bolkiah Mosque lit up at night, Brunei" src="https://images.unsplash.com/photo-1649437647110-54e7ad785230?auto=format&amp;fit=crop&amp;w=2400&amp;q=80"></div>
+  </div>
+  <div class="tilt"></div>
+  <canvas id="fog" aria-hidden="true"></canvas>
+  <div class="ui">
+    <header class="bar">
+      <a class="logo" href="index.html" aria-label="Brunei Solar home">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="color-mix(in srgb,#6d8f2a calc((1 - var(--k))*100%),#d8ee8e)"><circle cx="20" cy="20" r="0"/><path id="ray" d="M18.3 3.5h3.4l.9 8.4h-5.2Z"/><use href="#ray" transform="rotate(30 20 20)"/><use href="#ray" transform="rotate(60 20 20)"/><use href="#ray" transform="rotate(90 20 20)"/><use href="#ray" transform="rotate(120 20 20)"/><use href="#ray" transform="rotate(150 20 20)"/><use href="#ray" transform="rotate(180 20 20)"/><use href="#ray" transform="rotate(210 20 20)"/><use href="#ray" transform="rotate(240 20 20)"/><use href="#ray" transform="rotate(270 20 20)"/><use href="#ray" transform="rotate(300 20 20)"/><use href="#ray" transform="rotate(330 20 20)"/></g></svg>
+        Brunei Solar
+      </a>
+      <ul class="links">
+        <li><a href="why.html">Why Brunei Solar</a></li><li><a href="how.html">How it works</a></li><li><a href="residential.html">Residential</a></li><li><a href="savings.html">Savings</a></li><li><a href="pilot.html">Pilot programme</a></li>
+      </ul>
+      <div class="side"><a href="contact.html#faq">FAQ</a><a class="cta" href="contact.html"><span class="full">Book a Free Site Survey</span><span class="short">Free Survey</span></a></div>
+    </header>
+    <h1><span class="l1">Rooftop Solar &amp; Batteries</span><span><i>for every</i> <span class="y">Brunei Home</span></span></h1>
+    <div class="dock">
+      <div class="toggle" role="group" aria-label="Time of day">
+        <button id="bm" aria-pressed="false"><b>Morning</b><small>Solar powers your home</small></button>
+        <button id="bn" aria-pressed="true"><b>Night</b><small>Battery or grid takes over</small></button>
+      </div>
+      <p class="cap">About 1,350 kWh a year from every 1 kWp of panels. Free site survey, net-metering <br>approvals handled, serving Brunei-Muara, Tutong, Belait and Temburong.</p>
     </div>
-  </section>
+  </div>
+  <p class="credit">Photos: Jimmy Whitson and Safwan Yadiy on Unsplash</p>
 </main>
+<script>
+const root=document.documentElement.style,$=id=>document.getElementById(id);
+const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const SINK=240,RISE=820,DEPTH=.27;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const smooth=(a,b,x)=>{x=clamp((x-a)/(b-a));return x*x*(3-2*x)};
+let night=1,target=1,from=1,start=-1e9,queued=null,swapped=true,k=1,surge=0;
 
-<footer class="site-footer">
-  <div class="wrap foot">
-    <div>
-      <a href="index.html" class="brand light"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#F2B72E"/><g stroke="#F2B72E" stroke-width="2.4" stroke-linecap="round"><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6.1 6.1l2.8 2.8M23.1 23.1l2.8 2.8M6.1 25.9l2.8-2.8M23.1 8.9l2.8-2.8"/></g></svg><span>Brunei Solar</span></a>
-      <p>Rooftop solar and battery systems for Brunei Darussalam.</p>
-    </div>
-    <div class="foot-cols">
-      <div><h4>Company</h4><a href="why.html">Why Brunei Solar</a><a href="how.html">How it works</a><a href="blueprint.html">3D blueprint</a></div>
-      <div><h4>Solar</h4><a href="residential.html">Residential</a><a href="savings.html">Savings</a><a href="pilot.html">Pilot programme</a><a href="dashboard.html">Pilot dashboard</a></div>
-      <div><h4>Talk to us</h4><a href="contact.html">Contact us</a><a href="contact.html#faq">FAQ</a></div>
-    </div>
-  </div>
-  <div class="wrap foot-bottom">
-    <span>© <span id="yr">2026</span> Brunei Solar (working name). Company registration in progress.</span>
-    <span>Savings figures and prices are estimates, not guarantees. Photos: Unsplash (Brunei scenes and international solar installations).</span>
-  </div>
-</footer>
+const cv=$('fog'),gl=cv.getContext('webgl2',{alpha:true,premultipliedAlpha:true,antialias:false});
+let U={};
+if(gl){
+  const vs=`#version 300 es
+  void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0,1);}`;
+  const fs=`#version 300 es
+  precision highp float;
+  uniform vec2 R;uniform float T,S,K;out vec4 O;
+  float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+    return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float a=.5,s=0.;mat2 m=mat2(1.6,1.2,-1.2,1.6);p=mat2(.8,.6,-.6,.8)*p+5.3;for(int i=0;i<5;i++){s+=a*n(p);p=m*p;a*=.5;}return s;}
+  void main(){
+    vec2 uv=gl_FragCoord.xy/R;uv.y=1.-uv.y;
+    float asp=R.x/R.y;vec2 p=vec2(uv.x*asp,uv.y);
+    float t=T*.05;
+    vec2 w=vec2(fbm(p*1.3+vec2(t,-t*.6)),fbm(p*1.3+vec2(-t*.8,t)+7.));
+    float d=fbm(p*1.9+w*1.7+vec2(t*1.6,-t*1.1+S*.5));
+    float e=fbm(p*.9-w+vec2(-t,t*.5)+3.);
+    float low=smooth2(.70,1.04,uv.y+(d-.5)*.34);
+    float side=smooth2(.2,.0,uv.x+(e-.5)*.28)+smooth2(.8,1.,uv.x+(e-.5)*.28);
+    side*=smooth2(.25,.6,uv.y)*.2;
+    float wisps=smooth2(.5,.78,d)*smooth2(.22,.5,uv.y)*smooth2(.86,.6,uv.y)*.18;
+    float rest=clamp(low+side+wisps,0.,1.);
+    float front=1.02-S*.68;
+    float rise=smooth2(front-.02,front+.26,uv.y+(d-.5)*.5);
+    float haze=S*(.3+.46*d);
+    float a=clamp(max(rest,max(rise*.97,haze)),0.,1.);
+    vec3 dayA=vec3(.97,.93,.84),dayB=vec3(.79,.78,.71);
+    vec3 nitA=vec3(.40,.45,.57),nitB=vec3(.15,.19,.29);
+    vec3 c=mix(mix(dayB,dayA,d*1.15),mix(nitB,nitA,d*1.1),K);
+    float porch=exp(-dot((uv-vec2(.5,.78))*vec2(1.7,2.6),(uv-vec2(.5,.78))*vec2(1.7,2.6))*3.2);
+    c=mix(c,vec3(.86,.55,.27),K*porch*.42*(1.-S));
+    O=vec4(c*a,a);
+  }`.replace(/smooth2/g,'smoothstep');
+  const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);
+    if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(o));return o};
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(pr);gl.useProgram(pr);
+  for(const u of['R','T','S','K'])U[u]=gl.getUniformLocation(pr,u);
+}
+function size(){
+  if(!gl)return;
+  const w=Math.round(Math.min(innerWidth,960)),h=Math.round(w*innerHeight/innerWidth);
+  if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;gl.viewport(0,0,w,h)}
+}
+addEventListener('resize',size);size();
 
-<script src="assets/main.js?v=10"></script>
+function show(n){
+  $('setM').classList.toggle('is-on',!n);$('setN').classList.toggle('is-on',!!n);
+}
+function pick(n){
+  if(n===target&&queued===null)return;
+  $('bm').setAttribute('aria-pressed',!n);$('bn').setAttribute('aria-pressed',!!n);
+  if(calm){target=night=n;k=n;show(n);return}
+  if(animating)queued=n;else begin(n,clock);
+}
+let animating=false,clock=0;
+function begin(n,now){target=n;from=k;start=now;swapped=false;animating=true}
+$('bm').onclick=()=>pick(0);$('bn').onclick=()=>pick(1);
+
+function frame(now){
+  clock=now;
+  const d=now-start;let y=0,s=0,dip=0,k2=k;
+  if(animating){
+    if(d<SINK){const x=d/SINK;y=x*x*(3-2*x)*DEPTH}
+    else{
+      if(!swapped){swapped=true;night=target;show(target)}
+      const x=clamp((d-SINK)/RISE);y=Math.pow(1-x,3.4)*DEPTH;
+    }
+    s=smooth(0,SINK*.92,d)*(1-smooth(SINK+70,SINK+RISE*.92,d));
+    dip=smooth(30,190,d)*(1-smooth(330,720,d));
+    k=from+(target-from)*smooth(120,520,d);
+    k2=from+(target-from)*smooth(340,760,d);
+    if(d>=SINK+RISE){animating=false;k=k2=target;y=s=dip=0;if(queued!==null&&queued!==target){const q=queued;queued=null;begin(q,now)}else queued=null}
+  }
+  root.setProperty('--sink',(y*innerHeight).toFixed(1)+'px');
+  root.setProperty('--k',k.toFixed(3));root.setProperty('--k2',k2.toFixed(3));root.setProperty('--dip',dip.toFixed(3));
+  if(gl){gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,now/1000);gl.uniform1f(U.S,s);gl.uniform1f(U.K,k);gl.drawArrays(gl.TRIANGLES,0,3)}
+}
+function loop(t){frame(t);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
